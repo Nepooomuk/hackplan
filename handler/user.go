@@ -24,10 +24,11 @@ func LoginHandler(ctx *iris.Context) {
 				token := &model.Token{Token:"2138123ASDYXCASD"}
 				ctx.JSON(200, token)
 			} else {
-				ctx.JSON(403, "no valid")
+				ctx.JSON(403, "no found")
 			}
 		}
 	}
+	ctx.JSON(403, "no found")
 
 }
 

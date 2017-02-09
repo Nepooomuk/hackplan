@@ -10,6 +10,7 @@ var ressourcerepo map[int]model.Ressource
 
 func init()  {
 	ressourcerepo = map[int]model.Ressource{}
+	ressourcerepo[1] = model.Ressource{Id:1, Name: "Macbook", Quantity: 1}
 }
 
 func RessourceGetHandler(ctx *iris.Context) {

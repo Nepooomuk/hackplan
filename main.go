@@ -15,6 +15,7 @@ func main() {
 	{
 		api.Get("/user", userHandler)
 		api.Get("/user/:id", userHandler)
+		api.Post("/login", loginHandler)
 		api.Post("/user/:id", userHandler)
 		api.Put("/user/:id", userHandler)
 		api.Delete("/user/:id", userHandler)
@@ -44,6 +45,18 @@ func main() {
 	})*/
 
 	app.Listen(":8080")
+}
+
+func loginHandler(ctx *iris.Context) {
+	email := ctx.URLParam("email")
+	password := ctx.URLParam("password")
+	for _, value := range userrepo {
+		if value.Email == email && value.Password == password {
+			ctx.JSON(200, "true")
+		} else {
+			ctx.JSON(403, "false")
+		}
+	}
 }
 
 func userHandler(ctx *iris.Context) {

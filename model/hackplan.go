@@ -2,32 +2,32 @@ package model
 
 type (
 	User struct {
-		id        int
-		sureName  string
-		firstName string
-		isAdmin   bool
-		email     string
-		password  string
+		Id        int
+		SureName  string
+		FirstName string
+		IsAdmin   bool
+		Email     string
+		Password  string
 	}
 
 	Hackathons struct {
-		id         int
-		name       string
-		organistor string
-		projects   []Project
+		Id         int
+		Name       string
+		Organistor string
+		Projects   []Project
 	}
 
 	Project struct {
-		id               int
-		name             string
-		description      string
-		usefullSkulls    map[string]string
-		ressourcesNeeded []Ressource
+		Id               int
+		Name             string
+		Description      string
+		UsefullSkulls    map[string]string
+		RessourcesNeeded []Ressource
 	}
 
 	Ressource struct {
-		id       int
-		name     string
-		quantity int
+		Id       int
+		Name     string
+		Quantity int
 	}
 )

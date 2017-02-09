@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/hackdaysspring2017/hackplan/model"
 	"github.com/kataras/iris"
+	"fmt"
 )
 
 func main() {
@@ -55,27 +56,15 @@ func userHandler(ctx *iris.Context) {
 
 	if ctx.IsPost() {
 
-		/*	if err := ctx.ReadJSON(user); err != nil {
-			panic(err.Error())
-		} else {
+		user := model.User{}
 
+		if err := ctx.ReadJSON(&user); err != nil {
+			fmt.Println(err)
+			ctx.JSON(500, user)
 		}
-		ctx.PostBody()
-
-	}
-	user := new(&model.User{
-		Id: userID,
-		FirstName: "",
-		SureName: "",
-		Email: "",
-		I
-	})
-
-	if err := ctx.ReadJSON(user); err != nil {
-		panic(err.Error())
-	} else {
-
-	}*/
+		ctx.JSON(200, user)
+		//ctx.JSON(200, )
+		//ctx.PostBody()
 	}
 }
 

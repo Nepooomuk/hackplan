@@ -2,12 +2,12 @@ package model
 
 type (
 	User struct {
-		Id        int
-		SureName  string
-		FirstName string
-		IsAdmin   bool
-		Email     string
-		Password  string
+		Id        int `json:"id"`
+		SureName  string `json:"sure_name"`
+		FirstName string `json:"first_name"`
+		IsAdmin   bool `json:"is_admin"`
+		Email     string `json:"email"`
+		Password  string `json:"password"`
 	}
 
 	Hackathons struct {

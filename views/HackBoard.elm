@@ -96,7 +96,6 @@ type Msg
     = SearchInput String
     | Search
     | GetHackathonResponse (Result Http.Error Hackathons)
-    | Tick Time.Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

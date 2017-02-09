@@ -29,15 +29,6 @@ func LoginHandler(ctx *iris.Context) {
 		}
 	}
 
-	email := ctx.URLParam("email")
-	password := ctx.URLParam("password")
-	for _, value := range userrepo {
-		if value.Email == email && value.Password == password {
-			ctx.JSON(200, "true")
-		} else {
-			ctx.JSON(403, "false")
-		}
-	}
 }
 
 func UserGetHandler(ctx *iris.Context) {

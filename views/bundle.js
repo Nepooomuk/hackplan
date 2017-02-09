@@ -15546,9 +15546,6 @@ var _user$project$HackBoard$Model = F5(
 	function (a, b, c, d, e) {
 		return {error: a, query: b, hackathons: c, searchTerm: d, active: e};
 	});
-var _user$project$HackBoard$Tick = function (a) {
-	return {ctor: 'Tick', _0: a};
-};
 var _user$project$HackBoard$GetHackathonResponse = function (a) {
 	return {ctor: 'GetHackathonResponse', _0: a};
 };
@@ -15567,43 +15564,37 @@ var _user$project$HackBoard$init = {
 var _user$project$HackBoard$update = F2(
 	function (msg, model) {
 		var _p3 = msg;
-		_v2_3:
-		do {
-			switch (_p3.ctor) {
-				case 'SearchInput':
+		switch (_p3.ctor) {
+			case 'SearchInput':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{query: _p3._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'GetHackathonResponse':
+				if (_p3._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{query: _p3._0}),
+							{hackathons: _p3._0._0.hackathons}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
-				case 'GetHackathonResponse':
-					if (_p3._0.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{hackathons: _p3._0._0.hackathons}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						break _v2_3;
-					}
-				case 'Search':
-					var searchTerm = _elm_lang$core$String$isEmpty(model.query) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(model.query);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{searchTerm: searchTerm}),
-						_1: _user$project$HackBoard$getHackathons(model)
-					};
-				default:
-					break _v2_3;
-			}
-		} while(false);
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			default:
+				var searchTerm = _elm_lang$core$String$isEmpty(model.query) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(model.query);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{searchTerm: searchTerm}),
+					_1: _user$project$HackBoard$getHackathons(model)
+				};
+		}
 	});
 var _user$project$HackBoard$Search = {ctor: 'Search'};
 var _user$project$HackBoard$SearchInput = function (a) {
@@ -17021,7 +17012,7 @@ var _user$project$Main$main = A2(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Login.Msg":{"args":[],"tags":{"UsernameInput":["String"],"Error":["String"],"Submit":[],"LoginResponse":["Result.Result Http.Error String"],"PasswordInput":["String"]}},"HackBoard.Msg":{"args":[],"tags":{"Tick":["Time.Time"],"GetHackathonResponse":["Result.Result Http.Error HackBoard.Hackathons"],"SearchInput":["String"],"Search":[]}},"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"Logout":[],"LoginMsg":["Login.Msg"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"],"LeaderBoardMsg":["HackBoard.Msg"],"RunnerMsg":["HackProject.Msg"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"HackProject.Msg":{"args":[],"tags":{"BibInput":["String"],"AgeInput":["String"],"LocationInput":["String"],"SaveResponse":["Result.Result Http.Error String"],"NameInput":["String"],"Save":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"LeaderBoardPage":[],"NotFound":[],"LoginPage":[],"RunnerPage":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"HackBoard.Hackathons":{"args":[],"type":"{ hackathons : List HackBoard.Hackathon }"},"HackBoard.Hackathon":{"args":[],"type":"{ id : Int, name : String, organisator : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Login.Msg":{"args":[],"tags":{"UsernameInput":["String"],"Error":["String"],"Submit":[],"LoginResponse":["Result.Result Http.Error String"],"PasswordInput":["String"]}},"HackBoard.Msg":{"args":[],"tags":{"GetHackathonResponse":["Result.Result Http.Error HackBoard.Hackathons"],"SearchInput":["String"],"Search":[]}},"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"Logout":[],"LoginMsg":["Login.Msg"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"],"LeaderBoardMsg":["HackBoard.Msg"],"RunnerMsg":["HackProject.Msg"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"HackProject.Msg":{"args":[],"tags":{"BibInput":["String"],"AgeInput":["String"],"LocationInput":["String"],"SaveResponse":["Result.Result Http.Error String"],"NameInput":["String"],"Save":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"LeaderBoardPage":[],"NotFound":[],"LoginPage":[],"RunnerPage":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"HackBoard.Hackathons":{"args":[],"type":"{ hackathons : List HackBoard.Hackathon }"},"HackBoard.Hackathon":{"args":[],"type":"{ id : Int, name : String, organisator : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

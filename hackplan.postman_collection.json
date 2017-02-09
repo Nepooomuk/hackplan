@@ -1,0 +1,143 @@
+{
+	"variables": [],
+	"info": {
+		"name": "hackplan",
+		"_postman_id": "3993516c-1223-f79b-8603-0d0210f1e9da",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"request": {
+				"url": "0.0.0.0:8080/api/user/1",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 78,\n    \"surename\": \"Schatzi\",\n    \"firstname\": \"arek\",\n    \"isadmin\": true,\n    \"email\": \"sdjjasd\",\n    \"password\": \"test\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"request": {
+				"url": "0.0.0.0:8080/api/user",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"request": {
+				"url": "0.0.0.0:8080/api/user/0",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"url": "0.0.0.0:8080/api/login?email=test&password=test",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test\",\n    \"password\": \"test\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "hackaton",
+			"request": {
+				"url": "0.0.0.0:8080/api/hackathon",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "hackaton",
+			"request": {
+				"url": "0.0.0.0:8080/api/hackathon/1",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 3,\n\t\"name\": \"systems hackathon\",\n\t\"organisator\": \"arek ist der bozz\",\n\t\"projects\": [{\n\t\t\t\t\"id\": 3,\n\t\t\t\t\"name\": \"hackplan\",\n\t\t\t\t\"description\": \"something usefull\",\n\t\t\t\t\"usefullskills\": [{\n\t\t\t\t\t\"ddd\": \"llfd\",\n\t\t\t\t\t\"llll\": \"lloll\"\n\t\t\t\t}],\n\t\t\t\t\"ressourcesneeded\": [{\n\t\t\t\t\t\"id\": 2,\n\t\t\t\t\t\"name\": \"laptop\",\n\t\t\t\t\t\"quantity\": 2\n\t\t\t\t}, {\n\t\t\t\t\t\"id\": 3,\n\t\t\t\t\t\"name\": \"beamer\",\n\t\t\t\t\t\"quantity\": 1\n\t\t\t\t}]\n\t\t\t}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "project",
+			"request": {
+				"url": "0.0.0.0:8080/api/project",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "project",
+			"request": {
+				"url": "0.0.0.0:8080/api/project/1",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 3,\n\t\"name\": \"hackplan\",\n\t\"description\": \"something usefull\",\n\t\"usefullskills\": [{\n\t\t\"ddd\": \"llfd\",\n\t\t\"llll\": \"lloll\"\n\t}],\n\t\"ressourcesneeded\": [{\n\t\t\"id\": 2,\n\t\t\"name\": \"laptop\",\n\t\t\"quantity\": 2\n\t}]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ressource",
+			"request": {
+				"url": "0.0.0.0:8080/api/ressource",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ressource",
+			"request": {
+				"url": "0.0.0.0:8080/api/ressource/1",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n\t\"name\": \"laptop\",\n\t\"quantity\": 2,\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -21,7 +21,7 @@ type (
 		Id               int               `json:"id"`
 		Name             string            `json:"name"`
 		Description      string            `json:"description"`
-		UsefullSkulls    map[string]string `json:"usefullskulls"`
+		UsefullSkills    map[string]string `json:"usefullskills"`
 		RessourcesNeeded []Ressource       `json:"ressourcesneeded"`
 	}
 

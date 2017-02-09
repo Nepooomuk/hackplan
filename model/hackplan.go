@@ -11,23 +11,23 @@ type (
 	}
 
 	Hackathons struct {
-		Id         int
-		Name       string
-		Organistor string
-		Projects   []Project
+		Id          int       `json:"id"`
+		Name        string    `json:"name"`
+		Organisator string    `json:"organisator"`
+		Projects    []Project `json:"projects"`
 	}
 
 	Project struct {
-		Id               int
-		Name             string
-		Description      string
-		UsefullSkulls    map[string]string
-		RessourcesNeeded []Ressource
+		Id               int               `json:"id"`
+		Name             string            `json:"name"`
+		Description      string            `json:"description"`
+		UsefullSkulls    map[string]string `json:"usefullskulls"`
+		RessourcesNeeded []Ressource       `json:"ressourcesneeded"`
 	}
 
 	Ressource struct {
-		Id       int
-		Name     string
-		Quantity int
+		Id       int    `json:"id"`
+		Name     string `json:"name"`
+		Quantity int    `json:"quantity"`
 	}
 )

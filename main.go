@@ -48,17 +48,21 @@ func main() {
 
 func userHandler(ctx *iris.Context) {
 	if ctx.IsGet() {
-		//userID, _ := ctx.ParamInt("id")
+		userID, err := ctx.ParamInt("id")
+		if err == nil && userID != 0 {
+			currentuser := userrepo[userID]
+			ctx.JSON(iris.StatusOK, currentuser)
+		} else {
+			users := make([]model.User, 0)
 
-		users := make([]model.User, 0)
+			for _, value := range userrepo {
+				users = append(users, value)
+			}
 
-		for _, value := range userrepo {
-			users = append(users, value)
+			ctx.JSON(iris.StatusOK, map[string]interface{}{
+				"users": &users,
+			})
 		}
-
-		ctx.JSON(iris.StatusOK, map[string]interface{}{
-			"users": &users,
-		})
 
 	}
 

@@ -27,7 +27,5 @@ func main() {
 		ctx.Render("index.html", nil)
 	})
 
-
-	// Start the server at 0.0.0.0:6111
 	app.Listen(":8080")
 }

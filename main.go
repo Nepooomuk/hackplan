@@ -55,7 +55,6 @@ func userHandler(ctx *iris.Context) {
 	}
 
 	if ctx.IsPost() {
-
 		user := model.User{}
 
 		if err := ctx.ReadJSON(&user); err != nil {
@@ -63,8 +62,22 @@ func userHandler(ctx *iris.Context) {
 			ctx.JSON(500, user)
 		}
 		ctx.JSON(200, user)
-		//ctx.JSON(200, )
-		//ctx.PostBody()
+	}
+
+	if ctx.IsPut() {
+		//
+	}
+
+	if ctx.IsDelete() {
+		user := model.User{}
+
+		if err := ctx.ReadJSON(&user); err != nil {
+			fmt.Println(err)
+			ctx.JSON(500, user)
+		}
+		user = user
+		ctx.JSON(200, user)
+
 	}
 }
 

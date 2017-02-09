@@ -15780,6 +15780,25 @@ var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 var _local$local$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _local$local$Main$logoutView = A2(
+	_debois$elm_mdl$Material_Layout$link,
+	{
+		ctor: '::',
+		_0: _debois$elm_mdl$Material_Layout$href('https://github.com/debois/elm-mdl'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$span,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('logout'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
+	});
 var _local$local$Main$iconTaskInactive = A2(
 	_debois$elm_mdl$Material_Icon$view,
 	'timer_off',
@@ -15962,6 +15981,9 @@ var _local$local$Main$boxed = {
 };
 var _local$local$Main$initModel = {
 	users: {ctor: '[]'},
+	currentEmail: '',
+	currentPassword: '',
+	isLoggedIn: false,
 	error: _elm_lang$core$Maybe$Nothing,
 	mdl: _debois$elm_mdl$Material$model
 };
@@ -16002,12 +16024,107 @@ var _local$local$Main$usersDecoder = A3(
 	'users',
 	_elm_lang$core$Json_Decode$list(_local$local$Main$userDecoder),
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$Users));
-var _local$local$Main$Model = F3(
-	function (a, b, c) {
-		return {users: a, error: b, mdl: c};
+var _local$local$Main$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {users: a, currentEmail: b, currentPassword: c, isLoggedIn: d, error: e, mdl: f};
 	});
 var _local$local$Main$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
+};
+var _local$local$Main$EnterPassword = function (a) {
+	return {ctor: 'EnterPassword', _0: a};
+};
+var _local$local$Main$EnterEmail = function (a) {
+	return {ctor: 'EnterEmail', _0: a};
+};
+var _local$local$Main$Login = {ctor: 'Login'};
+var _local$local$Main$loginView = function (model) {
+	return A2(
+		_debois$elm_mdl$Material_Layout$row,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A5(
+				_debois$elm_mdl$Material_Textfield$render,
+				_local$local$Main$Mdl,
+				{
+					ctor: '::',
+					_0: 0,
+					_1: {ctor: '[]'}
+				},
+				model.mdl,
+				{
+					ctor: '::',
+					_0: _debois$elm_mdl$Material_Textfield$label('email'),
+					_1: {
+						ctor: '::',
+						_0: _debois$elm_mdl$Material_Options$onInput(_local$local$Main$EnterEmail),
+						_1: {ctor: '[]'}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: _debois$elm_mdl$Material_Layout$spacer,
+				_1: {
+					ctor: '::',
+					_0: A5(
+						_debois$elm_mdl$Material_Textfield$render,
+						_local$local$Main$Mdl,
+						{
+							ctor: '::',
+							_0: 0,
+							_1: {ctor: '[]'}
+						},
+						model.mdl,
+						{
+							ctor: '::',
+							_0: _debois$elm_mdl$Material_Textfield$label('password'),
+							_1: {
+								ctor: '::',
+								_0: _debois$elm_mdl$Material_Textfield$password,
+								_1: {
+									ctor: '::',
+									_0: _debois$elm_mdl$Material_Options$onInput(_local$local$Main$EnterPassword),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A5(
+							_debois$elm_mdl$Material_Button$render,
+							_local$local$Main$Mdl,
+							{
+								ctor: '::',
+								_0: 0,
+								_1: {ctor: '[]'}
+							},
+							model.mdl,
+							{
+								ctor: '::',
+								_0: _debois$elm_mdl$Material_Button$raised,
+								_1: {
+									ctor: '::',
+									_0: _debois$elm_mdl$Material_Button$colored,
+									_1: {
+										ctor: '::',
+										_0: _debois$elm_mdl$Material_Options$onClick(_local$local$Main$Login),
+										_1: {ctor: '[]'}
+									}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('login'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
 };
 var _local$local$Main$Search = {ctor: 'Search'};
 var _local$local$Main$viewSearchPanel = function (model) {
@@ -16068,7 +16185,7 @@ var _local$local$Main$GetUserResponse = function (a) {
 	return {ctor: 'GetUserResponse', _0: a};
 };
 var _local$local$Main$getUsers = function (model) {
-	var url = '/api/user';
+	var url = 'http://localhost:8080/api/user';
 	return A2(
 		_elm_lang$http$Http$send,
 		_local$local$Main$GetUserResponse,
@@ -16112,6 +16229,30 @@ var _local$local$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _local$local$Main$getUsers(model)
+				};
+			case 'Login':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{isLoggedIn: true, error: _elm_lang$core$Maybe$Nothing}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'EnterEmail':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentEmail: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'EnterPassword':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentPassword: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
 				return A3(_debois$elm_mdl$Material$update, _local$local$Main$Mdl, _p0._0, model);
@@ -16221,7 +16362,40 @@ var _local$local$Main$view = function (model) {
 													}),
 												_1: {ctor: '[]'}
 											}),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_debois$elm_mdl$Material_Layout$link,
+												{
+													ctor: '::',
+													_0: _debois$elm_mdl$Material_Layout$href('https://github.com/debois/elm-mdl'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$span,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('github'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_debois$elm_mdl$Material_Layout$row,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: model.isLoggedIn ? _local$local$Main$logoutView : _local$local$Main$loginView(model),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
 									}),
 								_1: {ctor: '[]'}
 							}

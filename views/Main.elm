@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as JD
+import Material.Options as Options exposing (css, when)
 import Json.Decode.Pipeline as JDP
 import Material
 import Material.Button as Button
@@ -19,14 +20,14 @@ import Material.Typography as Typo
 
 -- Model
 
+
 type alias User =
-    {
-        id : Int
-        , surename : String
-        , fristname : String
-        , isadmin : Bool
-        , email : String
-        , password : String
+    { id : Int
+    , surename : String
+    , fristname : String
+    , isadmin : Bool
+    , email : String
+    , password : String
     }
 
 
@@ -37,14 +38,17 @@ type alias Users =
 
 type alias Model =
     { users : List User
+    , currentEmail : String
+    , currentPassword : String
+    , isLoggedIn : Bool
     , error : Maybe String
     , mdl : Material.Model
     }
 
 
 
-
 -- Commands
+
 
 userDecoder : JD.Decoder User
 userDecoder =
@@ -63,7 +67,6 @@ usersDecoder =
         |> JDP.required "users" (JD.list userDecoder)
 
 
-
 getUsers : Model -> Cmd Msg
 getUsers model =
     let
@@ -72,11 +75,17 @@ getUsers model =
     in
         Http.send GetUserResponse (Http.get url usersDecoder)
 
+
+
 -- Init
+
 
 initModel : Model
 initModel =
     { users = []
+    , currentEmail = ""
+    , currentPassword = ""
+    , isLoggedIn = False
     , error = Nothing
     , mdl = Material.model
     }
@@ -90,6 +99,9 @@ type Msg
     = ClearError
     | GetUserResponse (Result Http.Error Users)
     | Search
+    | Login
+    | EnterEmail String
+    | EnterPassword String
     | Mdl (Material.Msg Msg)
 
 
@@ -112,6 +124,20 @@ update msg model =
 
         Search ->
             ( model, getUsers model )
+
+        Login ->
+            ( { model
+                | isLoggedIn = True
+                , error = Nothing
+              }
+            , Cmd.none
+            )
+
+        EnterEmail email ->
+            ( { model | currentEmail = email }, Cmd.none )
+
+        EnterPassword password ->
+            ( { model | currentPassword = password }, Cmd.none )
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
@@ -156,6 +182,48 @@ iconTaskInactive =
     Icon.view "timer_off" [ (Options.css "vertical-align" "text-bottom"), Icon.size18 ]
 
 
+loginView : Model -> Html Msg
+loginView model =
+    Layout.row []
+        [ Textfield.render Mdl
+            [ 0 ]
+            model.mdl
+            [ Textfield.label "email"
+            , Options.onInput EnterEmail
+            ]
+            []
+        , Layout.spacer
+        , Textfield.render Mdl
+            [ 0 ]
+            model.mdl
+            [ Textfield.label "password"
+            , Textfield.password
+            , Options.onInput EnterPassword
+            ]
+            []
+        , Button.render Mdl
+            [ 0 ]
+            model.mdl
+            [ Button.raised
+            , Button.colored
+            , Options.onClick Login
+            ]
+            [ text "login" ]
+        ]
+
+
+logoutView : Model -> Html Msg
+logoutView model =
+    Button.render Mdl
+                [ 0 ]
+                model.mdl
+                [ Button.raised
+                , Button.colored
+                , Options.onClick Login
+                ]
+                [ text "login" ]
+
+
 view : Model -> Html Msg
 view model =
     Layout.render Mdl
@@ -169,6 +237,15 @@ view model =
                     [ Layout.link
                         [ Layout.href "/api" ]
                         [ span [] [ text "api" ] ]
+                    , Layout.link
+                        [ Layout.href "https://github.com/debois/elm-mdl" ]
+                        [ span [] [ text "github" ] ]
+                    , Layout.row []
+                        [if (model.isLoggedIn) then
+                            logoutView model
+                          else
+                            loginView model
+                        ]
                     ]
                 ]
             ]
@@ -240,11 +317,12 @@ viewTasks users =
 
 viewTask : User -> Html Msg
 viewTask user =
-        Table.tr []
-            [ Table.td [ alignLeft ] [ text (toString user.id)  ]
-            , Table.td [ alignLeft ] [ text (user.fristname ++ " " ++ user.surename) ]
-            , Table.td [ alignLeft ] [ text user.email ]
-            ]
+    Table.tr []
+        [ Table.td [ alignLeft ] [ text (toString user.id) ]
+        , Table.td [ alignLeft ] [ text (user.fristname ++ " " ++ user.surename) ]
+        , Table.td [ alignLeft ] [ text user.email ]
+        ]
+
 
 
 -- Subscriptions

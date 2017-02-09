@@ -48,11 +48,13 @@ func main() {
 
 func userHandler(ctx *iris.Context) {
 	if ctx.IsGet() {
-		userID, _ := ctx.ParamInt("id")
-		user := &model.User{Id: userID, FirstName: "robin", SureName: "Schatzi", Email: "sdjjasd", IsAdmin: true, Password: "test"}
+		//userID, _ := ctx.ParamInt("id")
+
 		users := make([]model.User, 0)
 
-		users = append(users, *user)
+		for _, value := range userrepo {
+			users = append(users, value)
+		}
 
 		ctx.JSON(iris.StatusOK, map[string]interface{}{
 			"users": &users,
@@ -64,7 +66,7 @@ func userHandler(ctx *iris.Context) {
 		user := &model.User{}
 		if err := ctx.ReadJSON(&user); err != nil {
 			ctx.JSON(500, err.Error())
-		}else {
+		} else {
 			userrepo[user.Id] = *user
 		}
 
@@ -76,7 +78,6 @@ func userHandler(ctx *iris.Context) {
 		delete(userrepo, userID)
 		msg := fmt.Sprintf("deleted user with id %v", userID)
 		ctx.JSON(200, msg)
-
 	}
 }
 

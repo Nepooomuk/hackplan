@@ -229,7 +229,7 @@ view model =
         [ Layout.fixedHeader ]
         { header =
             [ Layout.row []
-                [ Layout.title [] [ text "Tokka Task Scheduler" ]
+                [ Layout.title [] [ text "Hack-Plan 2017" ]
                 , Layout.spacer
                 , Layout.navigation []
                     [ Layout.link

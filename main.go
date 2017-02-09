@@ -43,7 +43,7 @@ func main() {
 		ressourceApi.Delete("/ressource/:id", ressourceHandler)
 	}
 
-
+	app.StaticServe("./views", "/ui")
 
 	/*app.UseTemplate(html.New()).Directory("./views", ".html")
 
@@ -54,18 +54,18 @@ func main() {
 	app.Listen(":8080")
 }
 
-func userHandler(ctx *iris.Context){
+func userHandler(ctx *iris.Context) {
 	//lol
 }
 
-func hackathonsHandler(ctx *iris.Context){
+func hackathonsHandler(ctx *iris.Context) {
 	//lol
 }
 
-func projectHandler(ctx *iris.Context){
+func projectHandler(ctx *iris.Context) {
 	//lol
 }
 
-func ressourceHandler(ctx *iris.Context){
+func ressourceHandler(ctx *iris.Context) {
 	//lol
 }

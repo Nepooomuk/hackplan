@@ -51,7 +51,7 @@ userDecoder =
     JDP.decode User
         |> JDP.required "id" JD.int
         |> JDP.required "surename" JD.string
-        |> JDP.required "fristname" JD.string
+        |> JDP.required "firstname" JD.string
         |> JDP.required "isadmin" JD.bool
         |> JDP.required "email" JD.string
         |> JDP.required "password" JD.string

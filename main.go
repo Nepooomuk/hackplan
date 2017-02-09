@@ -1,46 +1,35 @@
 package main
 
 import (
+	"github.com/hackdaysspring2017/hackplan/model"
 	"github.com/kataras/iris"
 )
 
 func main() {
 	app := iris.New()
 
-	userApi := app.Party("/user")
+	api := app.Party("/api")
 	{
-		userApi.Get("/user", userHandler)
-		userApi.Get("/user/:id", userHandler)
-		userApi.Post("/user/:id", userHandler)
-		userApi.Put("/user/:id", userHandler)
-		userApi.Delete("/user/:id", userHandler)
-	}
-
-	hackathonsApi := app.Party("/hackathon")
-	{
-		hackathonsApi.Get("/hackathon", hackathonsHandler)
-		hackathonsApi.Get("/hackathon/:id", hackathonsHandler)
-		hackathonsApi.Post("/hackathon/:id", hackathonsHandler)
-		hackathonsApi.Put("/hackathon/:id", hackathonsHandler)
-		hackathonsApi.Delete("/hackathon/:id", hackathonsHandler)
-	}
-
-	projectApi := app.Party("/project")
-	{
-		projectApi.Get("/project", projectHandler)
-		projectApi.Get("/project/:id", projectHandler)
-		projectApi.Post("/project/:id", projectHandler)
-		projectApi.Put("/project/:id", projectHandler)
-		projectApi.Delete("/project/:id", projectHandler)
-	}
-
-	ressourceApi := app.Party("/ressource")
-	{
-		ressourceApi.Get("/ressource", ressourceHandler)
-		ressourceApi.Get("/ressource/:id", ressourceHandler)
-		ressourceApi.Post("/ressource/:id", ressourceHandler)
-		ressourceApi.Put("/ressource/:id", ressourceHandler)
-		ressourceApi.Delete("/ressource/:id", ressourceHandler)
+		api.Get("/user", userHandler)
+		api.Get("/user/:id", userHandler)
+		api.Post("/user/:id", userHandler)
+		api.Put("/user/:id", userHandler)
+		api.Delete("/user/:id", userHandler)
+		api.Get("/hackathon", hackathonsHandler)
+		api.Get("/hackathon/:id", hackathonsHandler)
+		api.Post("/hackathon/:id", hackathonsHandler)
+		api.Put("/hackathon/:id", hackathonsHandler)
+		api.Delete("/hackathon/:id", hackathonsHandler)
+		api.Get("/project", projectHandler)
+		api.Get("/project/:id", projectHandler)
+		api.Post("/project/:id", projectHandler)
+		api.Put("/project/:id", projectHandler)
+		api.Delete("/project/:id", projectHandler)
+		api.Get("/ressource", ressourceHandler)
+		api.Get("/ressource/:id", ressourceHandler)
+		api.Post("/ressource/:id", ressourceHandler)
+		api.Put("/ressource/:id", ressourceHandler)
+		api.Delete("/ressource/:id", ressourceHandler)
 	}
 
 	app.StaticServe("./views", "/ui")
@@ -55,10 +44,42 @@ func main() {
 }
 
 func userHandler(ctx *iris.Context) {
-	//lol
+	if ctx.IsGet() {
+		userID, _ := ctx.ParamInt("id")
+		user := &model.User{Id: userID, FirstName: "robin", SureName: "Schatzi", Email: "sdjjasd", IsAdmin: true, Password: "test"}
+		userarray := []model.User{}
+		userarray = append(userarray, *user)
+		ctx.JSON(200, userarray)
+
+	}
+
+	if ctx.IsPost() {
+
+		/*	if err := ctx.ReadJSON(user); err != nil {
+			panic(err.Error())
+		} else {
+
+		}
+		ctx.PostBody()
+
+	}
+	user := new(&model.User{
+		Id: userID,
+		FirstName: "",
+		SureName: "",
+		Email: "",
+		I
+	})
+
+	if err := ctx.ReadJSON(user); err != nil {
+		panic(err.Error())
+	} else {
+
+	}*/
+	}
 }
 
-func hackathonsHandler(ctx *iris.Context) {
+func hackathonsHandler (ctx *iris.Context) {
 	//lol
 }
 

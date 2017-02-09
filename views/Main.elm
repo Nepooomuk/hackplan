@@ -12,15 +12,15 @@ import HackProject
 
 type Page
     = NotFound
-    | LeaderBoardPage
+    | HackBoardPage
     | LoginPage
-    | RunnerPage
+    | ProjectPage
 
 
 securePages : List Page
 securePages =
-    [ RunnerPage ]
-
+    [  ]
+--- [ ProjectPage ]
 
 loginTarget : Page -> String -> String
 loginTarget page target =
@@ -88,9 +88,9 @@ init flags location =
 
         initCmd =
             Cmd.batch
-                [ Cmd.map LeaderBoardMsg lbInitCmd
+                [ Cmd.map HackBoardMsg lbInitCmd
                 , Cmd.map LoginMsg loginInitCmd
-                , Cmd.map RunnerMsg runnerInitCmd
+                , Cmd.map ProjectMsg runnerInitCmd
                 , secureCmd
                 ]
     in
@@ -109,9 +109,9 @@ loggedIn model =
 type Msg
     = Navigate Page
     | ChangePage Page
-    | LeaderBoardMsg HackBoard.Msg
+    | HackBoardMsg HackBoard.Msg
     | LoginMsg Login.Msg
-    | RunnerMsg HackProject.Msg
+    | ProjectMsg HackProject.Msg
     | Logout
 
 
@@ -128,13 +128,13 @@ update msg model =
             in
                 ( { model | page = securePage, target = secureTarget }, secureCmd )
 
-        LeaderBoardMsg msg ->
+        HackBoardMsg msg ->
             let
                 ( lbModel, lbCmd ) =
                     HackBoard.update msg model.leaderBoard
             in
                 ( { model | leaderBoard = lbModel }
-                , Cmd.map LeaderBoardMsg lbCmd
+                , Cmd.map HackBoardMsg lbCmd
                 )
 
         LoginMsg msg ->
@@ -160,7 +160,7 @@ update msg model =
                     ]
                 )
 
-        RunnerMsg msg ->
+        ProjectMsg msg ->
             let
                 token =
                     Maybe.withDefault "" model.token
@@ -169,14 +169,14 @@ update msg model =
                     HackProject.update msg model.runner token
             in
                 ( { model | runner = runnerModel }
-                , Cmd.map RunnerMsg runnerCmd
+                , Cmd.map ProjectMsg runnerCmd
                 )
 
         Logout ->
             ( { model | token = Nothing }
             , Cmd.batch
                 [ deleteToken ()
-                , pageToCmd LeaderBoardPage
+                , pageToCmd HackBoardPage
                 ]
             )
 
@@ -190,14 +190,14 @@ view model =
     let
         page =
             case model.page of
-                LeaderBoardPage ->
-                    model.leaderBoard |> HackBoard.view |> Html.map LeaderBoardMsg
+                HackBoardPage ->
+                    model.leaderBoard |> HackBoard.view |> Html.map HackBoardMsg
 
                 LoginPage ->
                     model.login |> Login.view |> Html.map LoginMsg
 
-                RunnerPage ->
-                    model.runner |> HackProject.view |> Html.map RunnerMsg
+                ProjectPage ->
+                    model.runner |> HackProject.view |> Html.map ProjectMsg
 
                 NotFound ->
                     div [ class "main" ]
@@ -214,7 +214,7 @@ view model =
 pageHeader : Model -> Html Msg
 pageHeader model =
     header []
-        [ a [ onClick (Navigate LeaderBoardPage) ] [ text "Hackplan 2017" ]
+        [ a [ onClick (Navigate HackBoardPage) ] [ text "Hackplan 2017" ]
         , ul []
             [ li []
                 [ addRunnerLinkView model ]
@@ -229,7 +229,7 @@ pageHeader model =
 addRunnerLinkView : Model -> Html Msg
 addRunnerLinkView model =
     if loggedIn model then
-        a [ onClick (Navigate RunnerPage) ] [ text "Add Runner" ]
+        a [ onClick (Navigate ProjectPage) ] [ text "Add Project" ]
     else
         text ""
 
@@ -250,16 +250,16 @@ hashToPage : String -> Page
 hashToPage hash =
     case hash of
         "" ->
-            LeaderBoardPage
+            HackBoardPage
 
         "#/" ->
-            LeaderBoardPage
+            HackBoardPage
 
         "#/login" ->
             LoginPage
 
-        "#/add" ->
-            RunnerPage
+        "#/projects" ->
+            ProjectPage
 
         _ ->
             NotFound
@@ -268,14 +268,14 @@ hashToPage hash =
 pageToHash : Page -> String
 pageToHash page =
     case page of
-        LeaderBoardPage ->
+        HackBoardPage ->
             "#/"
 
         LoginPage ->
             "#/login"
 
-        RunnerPage ->
-            "#/add"
+        ProjectPage ->
+            "#/projects"
 
         NotFound ->
             "#notfound"
@@ -298,9 +298,9 @@ locationToMsg location =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ model.leaderBoard |> HackBoard.subscriptions |> Sub.map LeaderBoardMsg
+        [ model.leaderBoard |> HackBoard.subscriptions |> Sub.map HackBoardMsg
         , model.login |> Login.subscriptions |> Sub.map LoginMsg
-        , model.runner |> HackProject.subscriptions |> Sub.map RunnerMsg
+        , model.runner |> HackProject.subscriptions |> Sub.map ProjectMsg
         ]
 
 

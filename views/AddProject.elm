@@ -1,10 +1,9 @@
-module HackProject exposing (..)
+module AddProject exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Json.Decode.Pipeline as JDP
 import Json.Decode as JD
 import Json.Encode as JE
 import String
@@ -12,46 +11,11 @@ import String
 
 -- model
 
---      Id               int               `json:"id"`
---        		Name             string            `json:"name"`
---        		Description      string            `json:"description"`
-
-type alias Project =
-    { id : Int
-    , name : String
-    , description : String
-    }
-
-type alias Projects =
-    { projects : List Project
-    }
-
 
 type Status
     = Saving String
     | Saved String
     | NotSaved
-
-projectDecoder : JD.Decoder Project
-projectDecoder =
-    JDP.decode Project
-        |> JDP.required "id" JD.int
-        |> JDP.required "name" JD.string
-        |> JDP.required "description" JD.string
-
-
-projectsDecoder : JD.Decoder Projects
-projectsDecoder =
-    JDP.decode Projects
-        |> JDP.required "projects" (JD.list projectDecoder)
-
-getProjects : Model -> Cmd Msg
-getProjects model =
-    let
-        url =
-            "/api/hackathon"
-    in
-        Http.send GetProjectsResponse (Http.get url projectsDecoder)
 
 
 type alias Model =
@@ -66,7 +30,6 @@ type alias Model =
     , bibError : Maybe String
     , error : Maybe String
     , status : Status
-    , projects : List Project
     }
 
 
@@ -83,7 +46,6 @@ initModel =
     , bibError = Nothing
     , error = Nothing
     , status = NotSaved
-    , projects = []
     }
 
 
@@ -162,7 +124,6 @@ type Msg
     | LocationInput String
     | AgeInput String
     | BibInput String
-    | GetProjectsResponse
     | Save
     | SaveResponse (Result Http.Error String)
 

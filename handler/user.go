@@ -8,12 +8,27 @@ import (
 
 var userrepo map[int]model.User
 
-func init()  {
+func init() {
 	userrepo = map[int]model.User{}
 }
 
-
 func LoginHandler(ctx *iris.Context) {
+
+	auth := &model.Auth{}
+
+	if err := ctx.ReadJSON(&auth); err != nil {
+		ctx.JSON(500, err.Error())
+	} else {
+		for _, value := range userrepo {
+			if value.Email == auth.Email && value.Password == auth.Password {
+				token := &model.Token{Token:"2138123ASDYXCASD"}
+				ctx.JSON(200, token)
+			} else {
+				ctx.JSON(403, "no valid")
+			}
+		}
+	}
+
 	email := ctx.URLParam("email")
 	password := ctx.URLParam("password")
 	for _, value := range userrepo {

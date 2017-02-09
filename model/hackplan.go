@@ -1,6 +1,15 @@
 package model
 
 type (
+	Token struct {
+		Token     string `json:"token"`
+	}
+
+	Auth struct {
+		Email     string `json:"email"`
+		Password  string `json:"password"`
+	}
+
 	User struct {
 		Id        int    `json:"id"`
 		SureName  string `json:"surename"`

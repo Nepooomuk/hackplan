@@ -16295,7 +16295,7 @@ var _user$project$Login$errorPanel = function (error) {
 };
 var _user$project$Login$initModel = {username: '', password: '', error: _elm_lang$core$Maybe$Nothing, target: '/#'};
 var _user$project$Login$init = {ctor: '_Tuple2', _0: _user$project$Login$initModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Login$url = 'http://localhost:5000/authenticate';
+var _user$project$Login$url = 'http://localhost:8080/api/login';
 var _user$project$Login$Model = F4(
 	function (a, b, c, d) {
 		return {username: a, password: b, error: c, target: d};

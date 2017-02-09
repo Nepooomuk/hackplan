@@ -28,3 +28,5 @@ _testmain.go
 .iml
 
 views/elm-stuff
+views/node_modules
+npm-debug.log

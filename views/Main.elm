@@ -1,347 +1,332 @@
-module Main exposing (..)
+port module Main exposing (..)
 
-import Dict exposing (Dict)
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Http
-import Json.Decode as JD
-import Material.Options as Options exposing (css, when)
-import Json.Decode.Pipeline as JDP
-import Material
-import Material.Button as Button
-import Material.Chip as Chip
-import Material.Icon as Icon
-import Material.Layout as Layout
-import Material.Options as Options
-import Material.Table as Table
-import Material.Textfield as Textfield
-import Material.Typography as Typo
+import Navigation
+import HackBoard
+import Login
+import HackProject
+
+-- model
+
+type Page
+    = NotFound
+    | LeaderBoardPage
+    | LoginPage
+    | RunnerPage
 
 
--- Model
+securePages : List Page
+securePages =
+    [ RunnerPage ]
 
 
-type alias User =
-    { id : Int
-    , surename : String
-    , fristname : String
-    , isadmin : Bool
-    , email : String
-    , password : String
-    }
+loginTarget : Page -> String -> String
+loginTarget page target =
+    case page of
+        LoginPage ->
+            target
+
+        _ ->
+            pageToHash page
 
 
-type alias Users =
-    { users : List User
-    }
+pageOrLoginPage : Page -> String -> Bool -> ( Page, String, Cmd Msg )
+pageOrLoginPage page target loggedIn =
+    if loggedIn || not (List.member page securePages) then
+        ( page
+        , loginTarget page target
+        , Cmd.none
+        )
+    else
+        ( LoginPage
+        , loginTarget page target
+        , pageToCmd LoginPage
+        )
 
 
 type alias Model =
-    { users : List User
-    , currentEmail : String
-    , currentPassword : String
-    , isLoggedIn : Bool
-    , error : Maybe String
-    , mdl : Material.Model
+    { page : Page
+    , target : String
+    , leaderBoard : HackBoard.Model
+    , login : Login.Model
+    , runner : HackProject.Model
+    , token : Maybe String
     }
 
 
-
--- Commands
-
-
-userDecoder : JD.Decoder User
-userDecoder =
-    JDP.decode User
-        |> JDP.required "id" JD.int
-        |> JDP.required "surename" JD.string
-        |> JDP.required "firstname" JD.string
-        |> JDP.required "isadmin" JD.bool
-        |> JDP.required "email" JD.string
-        |> JDP.required "password" JD.string
-
-
-usersDecoder : JD.Decoder Users
-usersDecoder =
-    JDP.decode Users
-        |> JDP.required "users" (JD.list userDecoder)
-
-
-getUsers : Model -> Cmd Msg
-getUsers model =
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
     let
-        url =
-            "/api/user"
+        target =
+            location.hash
+
+        page =
+            hashToPage target
+
+        ( securePage, secureTarget, secureCmd ) =
+            pageOrLoginPage page target (flags.token /= Nothing)
+
+        ( lbInitModel, lbInitCmd ) =
+            HackBoard.init
+
+        ( loginInitModel, loginInitCmd ) =
+            Login.init
+
+        ( runnerInitModel, runnerInitCmd ) =
+            HackProject.init
+
+        initModel =
+            { page = securePage
+            , target = secureTarget
+            , leaderBoard = lbInitModel
+            , login = loginInitModel
+            , runner = runnerInitModel
+            , token = flags.token
+            }
+
+        initCmd =
+            Cmd.batch
+                [ Cmd.map LeaderBoardMsg lbInitCmd
+                , Cmd.map LoginMsg loginInitCmd
+                , Cmd.map RunnerMsg runnerInitCmd
+                , secureCmd
+                ]
     in
-        Http.send GetUserResponse (Http.get url usersDecoder)
+        ( initModel, initCmd )
+
+
+loggedIn : Model -> Bool
+loggedIn model =
+    model.token /= Nothing
 
 
 
--- Init
-
-
-initModel : Model
-initModel =
-    { users = []
-    , currentEmail = ""
-    , currentPassword = ""
-    , isLoggedIn = False
-    , error = Nothing
-    , mdl = Material.model
-    }
-
-
-
--- Update
+-- update
 
 
 type Msg
-    = ClearError
-    | GetUserResponse (Result Http.Error Users)
-    | Search
-    | Login
-    | EnterEmail String
-    | EnterPassword String
-    | Mdl (Material.Msg Msg)
+    = Navigate Page
+    | ChangePage Page
+    | LeaderBoardMsg HackBoard.Msg
+    | LoginMsg Login.Msg
+    | RunnerMsg HackProject.Msg
+    | Logout
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ClearError ->
-            ( { model | error = Nothing }, Cmd.none )
+        Navigate page ->
+            ( model, pageToCmd page )
 
-        GetUserResponse (Ok users) ->
-            ( { model
-                | users = users.users
-                , error = Nothing
-              }
-            , Cmd.none
-            )
+        ChangePage page ->
+            let
+                ( securePage, secureTarget, secureCmd ) =
+                    pageOrLoginPage page model.target (loggedIn model)
+            in
+                ( { model | page = securePage, target = secureTarget }, secureCmd )
 
-        GetUserResponse (Err err) ->
-            ( { model | error = Just (toString err) }, Cmd.none )
+        LeaderBoardMsg msg ->
+            let
+                ( lbModel, lbCmd ) =
+                    HackBoard.update msg model.leaderBoard
+            in
+                ( { model | leaderBoard = lbModel }
+                , Cmd.map LeaderBoardMsg lbCmd
+                )
 
-        Search ->
-            ( model, getUsers model )
+        LoginMsg msg ->
+            let
+                ( loginModel, loginToken, loginCmd ) =
+                    Login.update msg model.login model.target
 
-        Login ->
-            ( { model
-                | isLoggedIn = True
-                , error = Nothing
-              }
-            , Cmd.none
-            )
+                saveTokenCmd =
+                    case loginToken of
+                        Just jwt ->
+                            saveToken jwt
 
-        EnterEmail email ->
-            ( { model | currentEmail = email }, Cmd.none )
+                        Nothing ->
+                            Cmd.none
+            in
+                ( { model
+                    | login = loginModel
+                    , token = loginToken
+                  }
+                , Cmd.batch
+                    [ Cmd.map LoginMsg loginCmd
+                    , saveTokenCmd
+                    ]
+                )
 
-        EnterPassword password ->
-            ( { model | currentPassword = password }, Cmd.none )
+        RunnerMsg msg ->
+            let
+                token =
+                    Maybe.withDefault "" model.token
 
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
+                ( runnerModel, runnerCmd ) =
+                    HackProject.update msg model.runner token
+            in
+                ( { model | runner = runnerModel }
+                , Cmd.map RunnerMsg runnerCmd
+                )
 
-
-
--- View
-
-
-boxed : List (Options.Property a b)
-boxed =
-    [ Options.css "margin" "auto"
-    , Options.css "padding-bottom" "1%"
-    , Options.css "padding-left" "4%"
-    , Options.css "padding-right" "4%"
-    , Options.css "padding-top" "1%"
-    ]
-
-
-alignLeft : Options.Property c m
-alignLeft =
-    Options.css "text-align" "left"
-
-
-alignRight : Options.Property c m
-alignRight =
-    Options.css "text-align" "right"
-
-
-alignCenter : Options.Property c m
-alignCenter =
-    Options.css "text-align" "center"
-
-
-iconTaskActive : Html Msg
-iconTaskActive =
-    Icon.view "timer" [ (Options.css "vertical-align" "text-bottom"), Icon.size18 ]
-
-
-iconTaskInactive : Html Msg
-iconTaskInactive =
-    Icon.view "timer_off" [ (Options.css "vertical-align" "text-bottom"), Icon.size18 ]
-
-
-loginView : Model -> Html Msg
-loginView model =
-    Layout.row []
-        [ Textfield.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Textfield.label "email"
-            , Options.onInput EnterEmail
-            ]
-            []
-        , Layout.spacer
-        , Textfield.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Textfield.label "password"
-            , Textfield.password
-            , Options.onInput EnterPassword
-            ]
-            []
-        , Button.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Button.raised
-            , Button.colored
-            , Options.onClick Login
-            ]
-            [ text "login" ]
-        ]
-
-
-logoutView : Model -> Html Msg
-logoutView model =
-    Button.render Mdl
-                [ 0 ]
-                model.mdl
-                [ Button.raised
-                , Button.colored
-                , Options.onClick Login
+        Logout ->
+            ( { model | token = Nothing }
+            , Cmd.batch
+                [ deleteToken ()
+                , pageToCmd LeaderBoardPage
                 ]
-                [ text "login" ]
+            )
+
+
+
+-- view
 
 
 view : Model -> Html Msg
 view model =
-    Layout.render Mdl
-        model.mdl
-        [ Layout.fixedHeader ]
-        { header =
-            [ Layout.row []
-                [ Layout.title [] [ text "Hack-Plan 2017" ]
-                , Layout.spacer
-                , Layout.navigation []
-                    [ Layout.link
-                        [ Layout.href "/api" ]
-                        [ span [] [ text "api" ] ]
-                    , Layout.link
-                        [ Layout.href "https://github.com/debois/elm-mdl" ]
-                        [ span [] [ text "github" ] ]
-                    , Layout.row []
-                        [if (model.isLoggedIn) then
-                            logoutView model
-                          else
-                            loginView model
+    let
+        page =
+            case model.page of
+                LeaderBoardPage ->
+                    model.leaderBoard |> HackBoard.view |> Html.map LeaderBoardMsg
+
+                LoginPage ->
+                    model.login |> Login.view |> Html.map LoginMsg
+
+                RunnerPage ->
+                    model.runner |> HackProject.view |> Html.map RunnerMsg
+
+                NotFound ->
+                    div [ class "main" ]
+                        [ h1 []
+                            [ text "Page Not Found!" ]
                         ]
-                    ]
-                ]
+    in
+        div []
+            [ pageHeader model
+            , page
             ]
-        , drawer = []
-        , tabs = ( [], [] )
-        , main = [ page model ]
-        }
 
 
-page : Model -> Html Msg
-page model =
-    Options.div boxed
-        [ viewErrorPanel model.error
-        , viewSearchPanel model
-        , viewTasks model.users
-        ]
-
-
-viewErrorPanel : Maybe String -> Html Msg
-viewErrorPanel error =
-    case error of
-        Nothing ->
-            text ""
-
-        Just msg ->
-            Chip.span
-                [ Chip.deleteIcon "cancel", Chip.deleteClick ClearError ]
-                [ Chip.content [] [ text msg ] ]
-
-
-viewSearchPanel : Model -> Html Msg
-viewSearchPanel model =
-    Html.form [ onSubmit Search ]
-        [ Textfield.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Textfield.label "Search for Users..."
-            , Textfield.disabled
+pageHeader : Model -> Html Msg
+pageHeader model =
+    header []
+        [ a [ onClick (Navigate LeaderBoardPage) ] [ text "Hackplan 2017" ]
+        , ul []
+            [ li []
+                [ addRunnerLinkView model ]
             ]
-            []
-        , Button.render Mdl
-            [ 1 ]
-            model.mdl
-            [ Options.onClick Search
-            ]
-            [ text "Search" ]
-        ]
-
-
-viewTasksHeader : Html Msg
-viewTasksHeader =
-    Table.thead []
-        [ Table.tr []
-            [ Table.th [ alignLeft ] [ text "Id" ]
-            , Table.th [ alignLeft ] [ text "Name" ]
-            , Table.th [ alignLeft ] [ text "Email" ]
+        , ul []
+            [ li []
+                [ loginLinkView model ]
             ]
         ]
 
 
-viewTasks : List User -> Html Msg
-viewTasks users =
-    users
-        |> List.map viewTask
-        |> Table.tbody []
-        |> (\rows -> viewTasksHeader :: [ rows ])
-        |> Table.table []
+addRunnerLinkView : Model -> Html Msg
+addRunnerLinkView model =
+    if loggedIn model then
+        a [ onClick (Navigate RunnerPage) ] [ text "Add Runner" ]
+    else
+        text ""
 
 
-viewTask : User -> Html Msg
-viewTask user =
-    Table.tr []
-        [ Table.td [ alignLeft ] [ text (toString user.id) ]
-        , Table.td [ alignLeft ] [ text (user.fristname ++ " " ++ user.surename) ]
-        , Table.td [ alignLeft ] [ text user.email ]
-        ]
+loginLinkView : Model -> Html Msg
+loginLinkView model =
+    if loggedIn model then
+        a [ onClick Logout ] [ text "Logout" ]
+    else
+        a [ onClick (Navigate LoginPage) ] [ text "Login" ]
 
 
 
--- Subscriptions
+-- navigation
+
+
+hashToPage : String -> Page
+hashToPage hash =
+    case hash of
+        "" ->
+            LeaderBoardPage
+
+        "#/" ->
+            LeaderBoardPage
+
+        "#/login" ->
+            LoginPage
+
+        "#/add" ->
+            RunnerPage
+
+        _ ->
+            NotFound
+
+
+pageToHash : Page -> String
+pageToHash page =
+    case page of
+        LeaderBoardPage ->
+            "#/"
+
+        LoginPage ->
+            "#/login"
+
+        RunnerPage ->
+            "#/add"
+
+        NotFound ->
+            "#notfound"
+
+
+pageToCmd : Page -> Cmd Msg
+pageToCmd page =
+    page |> pageToHash |> Navigation.modifyUrl
+
+
+locationToMsg : Navigation.Location -> Msg
+locationToMsg location =
+    location.hash |> hashToPage |> ChangePage
+
+
+
+-- subscriptions
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch
+        [ model.leaderBoard |> HackBoard.subscriptions |> Sub.map LeaderBoardMsg
+        , model.login |> Login.subscriptions |> Sub.map LoginMsg
+        , model.runner |> HackProject.subscriptions |> Sub.map RunnerMsg
+        ]
 
 
 
--- Main
+-- ports
 
 
-main : Program Never Model Msg
+port saveToken : String -> Cmd msg
+
+
+port deleteToken : () -> Cmd msg
+
+
+
+-- main
+
+
+type alias Flags =
+    { token : Maybe String }
+
+
+main : Program Flags Model Msg
 main =
-    Html.program
-        { init = ( initModel, getUsers initModel )
+    Navigation.programWithFlags locationToMsg
+        { init = init
         , update = update
-        , subscriptions = subscriptions
         , view = view
+        , subscriptions = subscriptions
         }

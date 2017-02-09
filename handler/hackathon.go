@@ -10,6 +10,8 @@ var hackathonrepo map[int]model.Hackathons
 
 func init()  {
 	 hackathonrepo = map[int]model.Hackathons{}
+	 projects := make([]model.Project, 0)
+	 hackathonrepo[1] = model.Hackathons{Id:1,Name:"Rewe Systems Hackathon 2017",Organisator:"Rewe",Projects:projects}
 }
 
 func HackathonGetHandler(ctx *iris.Context) {

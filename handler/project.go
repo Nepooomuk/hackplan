@@ -10,6 +10,10 @@ var projectrepo map[int]model.Project
 
 func init()  {
 	projectrepo = map[int]model.Project{}
+	ressourcesneeded := make([]model.Ressource, 0)
+	usefullskills := make(map[string]string)
+	projectrepo[1] = model.Project{Id:1, Name: "Hackplan", Description: "Plan Hackdays!", UsefullSkills: usefullskills, RessourcesNeeded: ressourcesneeded}
+
 }
 
 func ProjectGetHandler(ctx *iris.Context) {

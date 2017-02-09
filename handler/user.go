@@ -10,6 +10,7 @@ var userrepo map[int]model.User
 
 func init() {
 	userrepo = map[int]model.User{}
+	userrepo[1] = model.User{Id:1, SureName: "Power", FirstName: "Max", IsAdmin: true, Email: "Max.Power@rewe-oer-erkenschwick.de", Password: "cuteboyz1992"}
 }
 
 func LoginHandler(ctx *iris.Context) {

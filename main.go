@@ -6,6 +6,8 @@ import (
 	"github.com/kataras/iris"
 )
 
+var userrepo = map[int]model.User{}
+
 func main() {
 	app := iris.New()
 
@@ -59,28 +61,21 @@ func userHandler(ctx *iris.Context) {
 	}
 
 	if ctx.IsPost() {
-		user := model.User{}
-
+		user := &model.User{}
 		if err := ctx.ReadJSON(&user); err != nil {
-			fmt.Println(err)
-			ctx.JSON(500, user)
+			ctx.JSON(500, err.Error())
+		}else {
+			userrepo[user.Id] = *user
 		}
-		ctx.JSON(200, user)
-	}
 
-	if ctx.IsPut() {
-		//
+		ctx.JSON(200, userrepo)
 	}
 
 	if ctx.IsDelete() {
-		user := model.User{}
-
-		if err := ctx.ReadJSON(&user); err != nil {
-			fmt.Println(err)
-			ctx.JSON(500, user)
-		}
-		user = user
-		ctx.JSON(200, user)
+		userID, _ := ctx.ParamInt("id")
+		delete(userrepo, userID)
+		msg := fmt.Sprintf("deleted user with id %v", userID)
+		ctx.JSON(200, msg)
 
 	}
 }

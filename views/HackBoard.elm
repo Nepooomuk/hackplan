@@ -37,10 +37,6 @@ type alias Model =
     , active : Bool
     }
 
-
-
-
-
 initModel : Model
 initModel =
     { error = Nothing
@@ -51,20 +47,10 @@ initModel =
     }
 
 
-
 init : ( Model, Cmd Msg )
 init =
     ( initModel, getHackathons initModel )
 
-
-encodeWsMsg : String -> JE.Value -> String
-encodeWsMsg name data =
-    JE.encode 0
-        (JE.object
-            [ ( "name", JE.string name )
-            , ( "data", data )
-            ]
-        )
 
 hackDecoder : JD.Decoder Hackathon
 hackDecoder =

@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/hackdaysspring2017/hackplan/model"
 	"github.com/kataras/iris"
-	"fmt"
 )
 
 func main() {
@@ -48,9 +48,13 @@ func userHandler(ctx *iris.Context) {
 	if ctx.IsGet() {
 		userID, _ := ctx.ParamInt("id")
 		user := &model.User{Id: userID, FirstName: "robin", SureName: "Schatzi", Email: "sdjjasd", IsAdmin: true, Password: "test"}
-		userarray := []model.User{}
-		userarray = append(userarray, *user)
-		ctx.JSON(200, userarray)
+		users := make([]model.User, 0)
+
+		users = append(users, *user)
+
+		ctx.JSON(iris.StatusOK, map[string]interface{}{
+			"users": &users,
+		})
 
 	}
 
@@ -81,7 +85,7 @@ func userHandler(ctx *iris.Context) {
 	}
 }
 
-func hackathonsHandler (ctx *iris.Context) {
+func hackathonsHandler(ctx *iris.Context) {
 	//lol
 }
 

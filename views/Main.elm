@@ -19,108 +19,64 @@ import Material.Typography as Typo
 
 -- Model
 
-
-type alias Pagination =
-    { currentPage : Int
-    , pageCount : Int
+type alias User =
+    {
+        id : Int
+        , surename : String
+        , fristname : String
+        , isadmin : Bool
+        , email : String
+        , password : String
     }
 
 
-type alias Task =
-    { id : Int
-    , owner : String
-    , rule : String
-    , active : Bool
-    , request : TaskRequest
-    , labels : Dict String String
-    }
-
-
-type alias TaskRequest =
-    { url : String
-    , method : String
-    }
-
-
-type alias Tasks =
-    { pagination : Pagination
-    , tasks : List Task
+type alias Users =
+    { users : List User
     }
 
 
 type alias Model =
-    { tasks : List Task
-    , tasksPerPage : Int
-    , page : Int
-    , pageCount : Int
+    { users : List User
     , error : Maybe String
     , mdl : Material.Model
     }
 
 
-taskName : Task -> String
-taskName task =
-    Maybe.withDefault "---" (Dict.get "name" task.labels)
-
 
 
 -- Commands
 
-
-paginationDecoder : JD.Decoder Pagination
-paginationDecoder =
-    JDP.decode Pagination
-        |> JDP.required "currentPage" JD.int
-        |> JDP.required "pageCount" JD.int
-
-
-taskDecoder : JD.Decoder Task
-taskDecoder =
-    JDP.decode Task
+userDecoder : JD.Decoder User
+userDecoder =
+    JDP.decode User
         |> JDP.required "id" JD.int
-        |> JDP.required "owner" JD.string
-        |> JDP.required "scheduling_rule" JD.string
-        |> JDP.required "active" JD.bool
-        |> JDP.required "request" taskRequestDecoder
-        |> JDP.optional "labels" (JD.dict JD.string) Dict.empty
+        |> JDP.required "surename" JD.string
+        |> JDP.required "fristname" JD.string
+        |> JDP.required "isadmin" JD.bool
+        |> JDP.required "email" JD.string
+        |> JDP.required "password" JD.string
 
 
-taskRequestDecoder : JD.Decoder TaskRequest
-taskRequestDecoder =
-    JDP.decode TaskRequest
-        |> JDP.required "url" JD.string
-        |> JDP.required "method" JD.string
+usersDecoder : JD.Decoder Users
+usersDecoder =
+    JDP.decode Users
+        |> JDP.required "users" (JD.list userDecoder)
 
 
-tasksDecoder : JD.Decoder Tasks
-tasksDecoder =
-    JDP.decode Tasks
-        |> JDP.required "pagination" paginationDecoder
-        |> JDP.required "tasks" (JD.list taskDecoder)
 
-
-getTasks : Model -> Cmd Msg
-getTasks model =
+getUsers : Model -> Cmd Msg
+getUsers model =
     let
         url =
-            "/tasks?page="
-                ++ (toString model.page)
-                ++ "&objectsPerPage="
-                ++ (toString model.tasksPerPage)
+            "/api/user"
     in
-        Http.send GetTasksResponse (Http.get url tasksDecoder)
-
-
+        Http.send GetUserResponse (Http.get url usersDecoder)
 
 -- Init
 
-
 initModel : Model
 initModel =
-    { tasks = []
-    , tasksPerPage = 20
-    , page = 1
-    , pageCount = 1
+    { users = []
     , error = Nothing
     , mdl = Material.model
     }
@@ -132,12 +88,7 @@ initModel =
 
 type Msg
     = ClearError
-    | GetTasksResponse (Result Http.Error Tasks)
-    | InputTasksPerPage String
-    | PageFirst
-    | PageLast
-    | PageNext
-    | PagePrevious
+    | GetUserResponse (Result Http.Error Users)
     | Search
     | Mdl (Material.Msg Msg)
 
@@ -148,36 +99,19 @@ update msg model =
         ClearError ->
             ( { model | error = Nothing }, Cmd.none )
 
-        GetTasksResponse (Ok tasks) ->
+        GetUserResponse (Ok users) ->
             ( { model
-                | page = tasks.pagination.currentPage
-                , pageCount = tasks.pagination.pageCount
-                , tasks = tasks.tasks
+                | users = users.users
                 , error = Nothing
               }
             , Cmd.none
             )
 
-        GetTasksResponse (Err err) ->
+        GetUserResponse (Err err) ->
             ( { model | error = Just (toString err) }, Cmd.none )
 
-        InputTasksPerPage value ->
-            ( { model | tasksPerPage = Result.withDefault 0 (String.toInt value) }, Cmd.none )
-
-        PageFirst ->
-            ( model, getTasks { model | page = 1 } )
-
-        PageLast ->
-            ( model, getTasks { model | page = model.pageCount } )
-
-        PageNext ->
-            ( model, getTasks { model | page = model.page + 1 } )
-
-        PagePrevious ->
-            ( model, getTasks { model | page = model.page - 1 } )
-
         Search ->
-            ( model, getTasks model )
+            ( model, getUsers model )
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
@@ -233,8 +167,8 @@ view model =
                 , Layout.spacer
                 , Layout.navigation []
                     [ Layout.link
-                        [ Layout.href "/apidoc" ]
-                        [ span [] [ text "apidoc" ] ]
+                        [ Layout.href "/api" ]
+                        [ span [] [ text "api" ] ]
                     ]
                 ]
             ]
@@ -249,9 +183,7 @@ page model =
     Options.div boxed
         [ viewErrorPanel model.error
         , viewSearchPanel model
-        , viewPagingPanel model
-        , viewTasks model.tasks
-        , viewPagingPanel model
+        , viewTasks model.users
         ]
 
 
@@ -273,7 +205,7 @@ viewSearchPanel model =
         [ Textfield.render Mdl
             [ 0 ]
             model.mdl
-            [ Textfield.label "Search for Tasks..."
+            [ Textfield.label "Search for Users..."
             , Textfield.disabled
             ]
             []
@@ -290,95 +222,29 @@ viewTasksHeader : Html Msg
 viewTasksHeader =
     Table.thead []
         [ Table.tr []
-            [ Table.th [ alignLeft ] [ text "Name" ]
-            , Table.th [ alignLeft ] [ text "Owner" ]
-            , Table.th [ alignLeft ] [ text "Request" ]
-            , Table.th [ alignLeft ] [ text "Scheduling" ]
-            , Table.th [ alignCenter ]
-                [ Options.span []
-                    [ iconTaskActive
-                    , text "/"
-                    , iconTaskInactive
-                    ]
-                ]
-            , Table.th [ alignCenter ] [ text "ID" ]
+            [ Table.th [ alignLeft ] [ text "Id" ]
+            , Table.th [ alignLeft ] [ text "Name" ]
+            , Table.th [ alignLeft ] [ text "Email" ]
             ]
         ]
 
 
-viewTasks : List Task -> Html Msg
-viewTasks tasks =
-    tasks
-        |> List.sortBy taskName
+viewTasks : List User -> Html Msg
+viewTasks users =
+    users
         |> List.map viewTask
         |> Table.tbody []
         |> (\rows -> viewTasksHeader :: [ rows ])
         |> Table.table []
 
 
-viewTask : Task -> Html Msg
-viewTask task =
-    let
-        iconTask =
-            if task.active then
-                iconTaskActive
-            else
-                iconTaskInactive
-    in
+viewTask : User -> Html Msg
+viewTask user =
         Table.tr []
-            [ Table.td [ alignLeft ] [ text (taskName task) ]
-            , Table.td [ alignLeft ] [ text task.owner ]
-            , Table.td [ alignLeft ] [ text (task.request.method ++ " " ++ task.request.url) ]
-            , Table.td [ alignLeft ] [ text task.rule ]
-            , Table.td [ alignCenter ] [ iconTask ]
-            , Table.td [ alignCenter ] [ text (toString task.id) ]
+            [ Table.td [ alignLeft ] [ text (toString user.id)  ]
+            , Table.td [ alignLeft ] [ text (user.fristname ++ " " ++ user.surename) ]
+            , Table.td [ alignLeft ] [ text user.email ]
             ]
-
-
-viewPagingPanel : Model -> Html Msg
-viewPagingPanel model =
-    let
-        props =
-            [ Button.minifab ]
-
-        propsPrevious =
-            if model.page <= 1 then
-                Button.disabled :: props
-            else
-                props
-
-        propsNext =
-            if model.page >= model.pageCount then
-                Button.disabled :: props
-            else
-                props
-    in
-        div []
-            [ Button.render Mdl
-                [ 0 ]
-                model.mdl
-                ((Options.onClick PageFirst) :: propsPrevious)
-                [ Icon.i "first_page" ]
-            , Button.render Mdl
-                [ 1 ]
-                model.mdl
-                ((Options.onClick PagePrevious) :: propsPrevious)
-                [ Icon.i "chevron_left" ]
-            , Options.styled span
-                [ Typo.body1 ]
-                [ text (toString model.page) ]
-            , Button.render Mdl
-                [ 2 ]
-                model.mdl
-                ((Options.onClick PageNext) :: propsNext)
-                [ Icon.i "chevron_right" ]
-            , Button.render Mdl
-                [ 3 ]
-                model.mdl
-                ((Options.onClick PageLast) :: propsNext)
-                [ Icon.i "last_page" ]
-            ]
-
 
 
 -- Subscriptions
@@ -396,7 +262,7 @@ subscriptions model =
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( initModel, getTasks initModel )
+        { init = ( initModel, getUsers initModel )
         , update = update
         , subscriptions = subscriptions
         , view = view

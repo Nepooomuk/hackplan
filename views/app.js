@@ -15826,7 +15826,7 @@ var _local$local$Main$viewTasksHeader = A2(
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('Name'),
+						_0: _elm_lang$html$Html$text('Id'),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -15840,7 +15840,7 @@ var _local$local$Main$viewTasksHeader = A2(
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('Owner'),
+							_0: _elm_lang$html$Html$text('Name'),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -15854,75 +15854,91 @@ var _local$local$Main$viewTasksHeader = A2(
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text('Request'),
+								_0: _elm_lang$html$Html$text('Email'),
 								_1: {ctor: '[]'}
 							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_debois$elm_mdl$Material_Table$th,
-								{
-									ctor: '::',
-									_0: _local$local$Main$alignLeft,
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Scheduling'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_debois$elm_mdl$Material_Table$th,
-									{
-										ctor: '::',
-										_0: _local$local$Main$alignCenter,
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: A2(
-											_debois$elm_mdl$Material_Options$span,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _local$local$Main$iconTaskActive,
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html$text('/'),
-													_1: {
-														ctor: '::',
-														_0: _local$local$Main$iconTaskInactive,
-														_1: {ctor: '[]'}
-													}
-												}
-											}),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_debois$elm_mdl$Material_Table$th,
-										{
-											ctor: '::',
-											_0: _local$local$Main$alignCenter,
-											_1: {ctor: '[]'}
-										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('ID'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {ctor: '[]'}
-								}
-							}
-						}
+						_1: {ctor: '[]'}
 					}
 				}
 			}),
 		_1: {ctor: '[]'}
 	});
+var _local$local$Main$viewTask = function (user) {
+	return A2(
+		_debois$elm_mdl$Material_Table$tr,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_debois$elm_mdl$Material_Table$td,
+				{
+					ctor: '::',
+					_0: _local$local$Main$alignLeft,
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(user.id)),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_debois$elm_mdl$Material_Table$td,
+					{
+						ctor: '::',
+						_0: _local$local$Main$alignLeft,
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								user.fristname,
+								A2(_elm_lang$core$Basics_ops['++'], ' ', user.surename))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_debois$elm_mdl$Material_Table$td,
+						{
+							ctor: '::',
+							_0: _local$local$Main$alignLeft,
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(user.email),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _local$local$Main$viewTasks = function (users) {
+	return A2(
+		_debois$elm_mdl$Material_Table$table,
+		{ctor: '[]'},
+		function (rows) {
+			return {
+				ctor: '::',
+				_0: _local$local$Main$viewTasksHeader,
+				_1: {
+					ctor: '::',
+					_0: rows,
+					_1: {ctor: '[]'}
+				}
+			};
+		}(
+			A2(
+				_debois$elm_mdl$Material_Table$tbody,
+				{ctor: '[]'},
+				A2(_elm_lang$core$List$map, _local$local$Main$viewTask, users))));
+};
 var _local$local$Main$boxed = {
 	ctor: '::',
 	_0: A2(_debois$elm_mdl$Material_Options$css, 'margin', 'auto'),
@@ -15945,217 +15961,50 @@ var _local$local$Main$boxed = {
 	}
 };
 var _local$local$Main$initModel = {
-	tasks: {ctor: '[]'},
-	tasksPerPage: 20,
-	page: 1,
-	pageCount: 1,
+	users: {ctor: '[]'},
 	error: _elm_lang$core$Maybe$Nothing,
 	mdl: _debois$elm_mdl$Material$model
 };
-var _local$local$Main$taskName = function (task) {
-	return A2(
-		_elm_lang$core$Maybe$withDefault,
-		'---',
-		A2(_elm_lang$core$Dict$get, 'name', task.labels));
-};
-var _local$local$Main$viewTask = function (task) {
-	var iconTask = task.active ? _local$local$Main$iconTaskActive : _local$local$Main$iconTaskInactive;
-	return A2(
-		_debois$elm_mdl$Material_Table$tr,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_debois$elm_mdl$Material_Table$td,
-				{
-					ctor: '::',
-					_0: _local$local$Main$alignLeft,
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						_local$local$Main$taskName(task)),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_debois$elm_mdl$Material_Table$td,
-					{
-						ctor: '::',
-						_0: _local$local$Main$alignLeft,
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(task.owner),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_debois$elm_mdl$Material_Table$td,
-						{
-							ctor: '::',
-							_0: _local$local$Main$alignLeft,
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									task.request.method,
-									A2(_elm_lang$core$Basics_ops['++'], ' ', task.request.url))),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_debois$elm_mdl$Material_Table$td,
-							{
-								ctor: '::',
-								_0: _local$local$Main$alignLeft,
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(task.rule),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_debois$elm_mdl$Material_Table$td,
-								{
-									ctor: '::',
-									_0: _local$local$Main$alignCenter,
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: iconTask,
-									_1: {ctor: '[]'}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_debois$elm_mdl$Material_Table$td,
-									{
-										ctor: '::',
-										_0: _local$local$Main$alignCenter,
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text(
-											_elm_lang$core$Basics$toString(task.id)),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							}
-						}
-					}
-				}
-			}
-		});
-};
-var _local$local$Main$viewTasks = function (tasks) {
-	return A2(
-		_debois$elm_mdl$Material_Table$table,
-		{ctor: '[]'},
-		function (rows) {
-			return {
-				ctor: '::',
-				_0: _local$local$Main$viewTasksHeader,
-				_1: {
-					ctor: '::',
-					_0: rows,
-					_1: {ctor: '[]'}
-				}
-			};
-		}(
-			A2(
-				_debois$elm_mdl$Material_Table$tbody,
-				{ctor: '[]'},
-				A2(
-					_elm_lang$core$List$map,
-					_local$local$Main$viewTask,
-					A2(_elm_lang$core$List$sortBy, _local$local$Main$taskName, tasks)))));
-};
-var _local$local$Main$Pagination = F2(
-	function (a, b) {
-		return {currentPage: a, pageCount: b};
-	});
-var _local$local$Main$paginationDecoder = A3(
-	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-	'pageCount',
-	_elm_lang$core$Json_Decode$int,
-	A3(
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'currentPage',
-		_elm_lang$core$Json_Decode$int,
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$Pagination)));
-var _local$local$Main$Task = F6(
+var _local$local$Main$User = F6(
 	function (a, b, c, d, e, f) {
-		return {id: a, owner: b, rule: c, active: d, request: e, labels: f};
+		return {id: a, surename: b, fristname: c, isadmin: d, email: e, password: f};
 	});
-var _local$local$Main$TaskRequest = F2(
-	function (a, b) {
-		return {url: a, method: b};
-	});
-var _local$local$Main$taskRequestDecoder = A3(
+var _local$local$Main$userDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-	'method',
+	'password',
 	_elm_lang$core$Json_Decode$string,
 	A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'url',
+		'email',
 		_elm_lang$core$Json_Decode$string,
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$TaskRequest)));
-var _local$local$Main$taskDecoder = A4(
-	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
-	'labels',
-	_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string),
-	_elm_lang$core$Dict$empty,
-	A3(
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'request',
-		_local$local$Main$taskRequestDecoder,
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-			'active',
+			'isadmin',
 			_elm_lang$core$Json_Decode$bool,
 			A3(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-				'scheduling_rule',
+				'fristname',
 				_elm_lang$core$Json_Decode$string,
 				A3(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-					'owner',
+					'surename',
 					_elm_lang$core$Json_Decode$string,
 					A3(
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 						'id',
 						_elm_lang$core$Json_Decode$int,
-						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$Task)))))));
-var _local$local$Main$Tasks = F2(
-	function (a, b) {
-		return {pagination: a, tasks: b};
-	});
-var _local$local$Main$tasksDecoder = A3(
+						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$User)))))));
+var _local$local$Main$Users = function (a) {
+	return {users: a};
+};
+var _local$local$Main$usersDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-	'tasks',
-	_elm_lang$core$Json_Decode$list(_local$local$Main$taskDecoder),
-	A3(
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'pagination',
-		_local$local$Main$paginationDecoder,
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$Tasks)));
-var _local$local$Main$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {tasks: a, tasksPerPage: b, page: c, pageCount: d, error: e, mdl: f};
+	'users',
+	_elm_lang$core$Json_Decode$list(_local$local$Main$userDecoder),
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_local$local$Main$Users));
+var _local$local$Main$Model = F3(
+	function (a, b, c) {
+		return {users: a, error: b, mdl: c};
 	});
 var _local$local$Main$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
@@ -16182,7 +16031,7 @@ var _local$local$Main$viewSearchPanel = function (model) {
 				model.mdl,
 				{
 					ctor: '::',
-					_0: _debois$elm_mdl$Material_Textfield$label('Search for Tasks...'),
+					_0: _debois$elm_mdl$Material_Textfield$label('Search for Users...'),
 					_1: {
 						ctor: '::',
 						_0: _debois$elm_mdl$Material_Textfield$disabled,
@@ -16215,149 +16064,15 @@ var _local$local$Main$viewSearchPanel = function (model) {
 			}
 		});
 };
-var _local$local$Main$PagePrevious = {ctor: 'PagePrevious'};
-var _local$local$Main$PageNext = {ctor: 'PageNext'};
-var _local$local$Main$PageLast = {ctor: 'PageLast'};
-var _local$local$Main$PageFirst = {ctor: 'PageFirst'};
-var _local$local$Main$viewPagingPanel = function (model) {
-	var props = {
-		ctor: '::',
-		_0: _debois$elm_mdl$Material_Button$minifab,
-		_1: {ctor: '[]'}
-	};
-	var propsPrevious = (_elm_lang$core$Native_Utils.cmp(model.page, 1) < 1) ? {ctor: '::', _0: _debois$elm_mdl$Material_Button$disabled, _1: props} : props;
-	var propsNext = (_elm_lang$core$Native_Utils.cmp(model.page, model.pageCount) > -1) ? {ctor: '::', _0: _debois$elm_mdl$Material_Button$disabled, _1: props} : props;
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A5(
-				_debois$elm_mdl$Material_Button$render,
-				_local$local$Main$Mdl,
-				{
-					ctor: '::',
-					_0: 0,
-					_1: {ctor: '[]'}
-				},
-				model.mdl,
-				{
-					ctor: '::',
-					_0: _debois$elm_mdl$Material_Options$onClick(_local$local$Main$PageFirst),
-					_1: propsPrevious
-				},
-				{
-					ctor: '::',
-					_0: _debois$elm_mdl$Material_Icon$i('first_page'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A5(
-					_debois$elm_mdl$Material_Button$render,
-					_local$local$Main$Mdl,
-					{
-						ctor: '::',
-						_0: 1,
-						_1: {ctor: '[]'}
-					},
-					model.mdl,
-					{
-						ctor: '::',
-						_0: _debois$elm_mdl$Material_Options$onClick(_local$local$Main$PagePrevious),
-						_1: propsPrevious
-					},
-					{
-						ctor: '::',
-						_0: _debois$elm_mdl$Material_Icon$i('chevron_left'),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A3(
-						_debois$elm_mdl$Material_Options$styled,
-						_elm_lang$html$Html$span,
-						{
-							ctor: '::',
-							_0: _debois$elm_mdl$Material_Typography$body1,
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(model.page)),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A5(
-							_debois$elm_mdl$Material_Button$render,
-							_local$local$Main$Mdl,
-							{
-								ctor: '::',
-								_0: 2,
-								_1: {ctor: '[]'}
-							},
-							model.mdl,
-							{
-								ctor: '::',
-								_0: _debois$elm_mdl$Material_Options$onClick(_local$local$Main$PageNext),
-								_1: propsNext
-							},
-							{
-								ctor: '::',
-								_0: _debois$elm_mdl$Material_Icon$i('chevron_right'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A5(
-								_debois$elm_mdl$Material_Button$render,
-								_local$local$Main$Mdl,
-								{
-									ctor: '::',
-									_0: 3,
-									_1: {ctor: '[]'}
-								},
-								model.mdl,
-								{
-									ctor: '::',
-									_0: _debois$elm_mdl$Material_Options$onClick(_local$local$Main$PageLast),
-									_1: propsNext
-								},
-								{
-									ctor: '::',
-									_0: _debois$elm_mdl$Material_Icon$i('last_page'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			}
-		});
+var _local$local$Main$GetUserResponse = function (a) {
+	return {ctor: 'GetUserResponse', _0: a};
 };
-var _local$local$Main$InputTasksPerPage = function (a) {
-	return {ctor: 'InputTasksPerPage', _0: a};
-};
-var _local$local$Main$GetTasksResponse = function (a) {
-	return {ctor: 'GetTasksResponse', _0: a};
-};
-var _local$local$Main$getTasks = function (model) {
-	var url = A2(
-		_elm_lang$core$Basics_ops['++'],
-		'/tasks?page=',
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(model.page),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'&objectsPerPage=',
-				_elm_lang$core$Basics$toString(model.tasksPerPage))));
+var _local$local$Main$getUsers = function (model) {
+	var url = '/api/user';
 	return A2(
 		_elm_lang$http$Http$send,
-		_local$local$Main$GetTasksResponse,
-		A2(_elm_lang$http$Http$get, url, _local$local$Main$tasksDecoder));
+		_local$local$Main$GetUserResponse,
+		A2(_elm_lang$http$Http$get, url, _local$local$Main$usersDecoder));
 };
 var _local$local$Main$update = F2(
 	function (msg, model) {
@@ -16371,14 +16086,13 @@ var _local$local$Main$update = F2(
 						{error: _elm_lang$core$Maybe$Nothing}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'GetTasksResponse':
+			case 'GetUserResponse':
 				if (_p0._0.ctor === 'Ok') {
-					var _p1 = _p0._0._0;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{page: _p1.pagination.currentPage, pageCount: _p1.pagination.pageCount, tasks: _p1.tasks, error: _elm_lang$core$Maybe$Nothing}),
+							{users: _p0._0._0.users, error: _elm_lang$core$Maybe$Nothing}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -16393,60 +16107,11 @@ var _local$local$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			case 'InputTasksPerPage':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							tasksPerPage: A2(
-								_elm_lang$core$Result$withDefault,
-								0,
-								_elm_lang$core$String$toInt(_p0._0))
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PageFirst':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _local$local$Main$getTasks(
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{page: 1}))
-				};
-			case 'PageLast':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _local$local$Main$getTasks(
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{page: model.pageCount}))
-				};
-			case 'PageNext':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _local$local$Main$getTasks(
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{page: model.page + 1}))
-				};
-			case 'PagePrevious':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _local$local$Main$getTasks(
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{page: model.page - 1}))
-				};
 			case 'Search':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _local$local$Main$getTasks(model)
+					_1: _local$local$Main$getUsers(model)
 				};
 			default:
 				return A3(_debois$elm_mdl$Material$update, _local$local$Main$Mdl, _p0._0, model);
@@ -16454,8 +16119,8 @@ var _local$local$Main$update = F2(
 	});
 var _local$local$Main$ClearError = {ctor: 'ClearError'};
 var _local$local$Main$viewErrorPanel = function (error) {
-	var _p2 = error;
-	if (_p2.ctor === 'Nothing') {
+	var _p1 = error;
+	if (_p1.ctor === 'Nothing') {
 		return _elm_lang$html$Html$text('');
 	} else {
 		return A2(
@@ -16476,7 +16141,7 @@ var _local$local$Main$viewErrorPanel = function (error) {
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(_p2._0),
+						_0: _elm_lang$html$Html$text(_p1._0),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
@@ -16495,16 +16160,8 @@ var _local$local$Main$page = function (model) {
 				_0: _local$local$Main$viewSearchPanel(model),
 				_1: {
 					ctor: '::',
-					_0: _local$local$Main$viewPagingPanel(model),
-					_1: {
-						ctor: '::',
-						_0: _local$local$Main$viewTasks(model.tasks),
-						_1: {
-							ctor: '::',
-							_0: _local$local$Main$viewPagingPanel(model),
-							_1: {ctor: '[]'}
-						}
-					}
+					_0: _local$local$Main$viewTasks(model.users),
+					_1: {ctor: '[]'}
 				}
 			}
 		});
@@ -16549,7 +16206,7 @@ var _local$local$Main$view = function (model) {
 											_debois$elm_mdl$Material_Layout$link,
 											{
 												ctor: '::',
-												_0: _debois$elm_mdl$Material_Layout$href('/apidoc'),
+												_0: _debois$elm_mdl$Material_Layout$href('/api'),
 												_1: {ctor: '[]'}
 											},
 											{
@@ -16559,7 +16216,7 @@ var _local$local$Main$view = function (model) {
 													{ctor: '[]'},
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html$text('apidoc'),
+														_0: _elm_lang$html$Html$text('api'),
 														_1: {ctor: '[]'}
 													}),
 												_1: {ctor: '[]'}
@@ -16590,7 +16247,7 @@ var _local$local$Main$main = _elm_lang$html$Html$program(
 		init: {
 			ctor: '_Tuple2',
 			_0: _local$local$Main$initModel,
-			_1: _local$local$Main$getTasks(_local$local$Main$initModel)
+			_1: _local$local$Main$getUsers(_local$local$Main$initModel)
 		},
 		update: _local$local$Main$update,
 		subscriptions: _local$local$Main$subscriptions,

@@ -166,7 +166,7 @@ update msg model =
                     Maybe.withDefault "" model.token
 
                 ( runnerModel, runnerCmd ) =
-                    HackProject.update msg model.runner token
+                    HackProject.update msg model.runner
             in
                 ( { model | runner = runnerModel }
                 , Cmd.map ProjectMsg runnerCmd
@@ -202,7 +202,7 @@ view model =
                 NotFound ->
                     div [ class "main" ]
                         [ h1 []
-                            [ text "Page Not Found!" ]
+                            [ text "Page Not Found" ]
                         ]
     in
         div []

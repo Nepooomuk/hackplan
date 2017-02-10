@@ -15654,6 +15654,12 @@ var _user$project$HackBoard$view = function (model) {
 var _user$project$HackProject$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _user$project$HackProject$viewForm = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{ctor: '[]'});
+};
 var _user$project$HackProject$errorPanel = function (error) {
 	var _p0 = error;
 	if (_p0.ctor === 'Nothing') {
@@ -15673,108 +15679,34 @@ var _user$project$HackProject$errorPanel = function (error) {
 			});
 	}
 };
-var _user$project$HackProject$asInt = function (string) {
+var _user$project$HackProject$view = function (model) {
 	return A2(
-		_elm_lang$core$Result$withDefault,
-		0,
-		_elm_lang$core$String$toInt(string));
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('main'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _user$project$HackProject$errorPanel(model.error),
+			_1: {
+				ctor: '::',
+				_0: _user$project$HackProject$viewForm(model),
+				_1: {ctor: '[]'}
+			}
+		});
 };
-var _user$project$HackProject$postWithHeaders = F4(
-	function (url, headers, body, decoder) {
-		return _elm_lang$http$Http$request(
-			{
-				method: 'POST',
-				url: url,
-				headers: headers,
-				body: body,
-				expect: _elm_lang$http$Http$expectJson(decoder),
-				timeout: _elm_lang$core$Maybe$Nothing,
-				withCredentials: false
-			});
+var _user$project$HackProject$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
-var _user$project$HackProject$bibInput = F2(
-	function (model, bib) {
-		var bibInt = A2(
-			_elm_lang$core$Result$withDefault,
-			0,
-			_elm_lang$core$String$toInt(bib));
-		var bibError = (_elm_lang$core$Native_Utils.cmp(bibInt, 0) < 1) ? _elm_lang$core$Maybe$Just('Must Enter a Positive Number') : _elm_lang$core$Maybe$Nothing;
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{bib: bib, bibError: bibError}),
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
-	});
-var _user$project$HackProject$ageInput = F2(
-	function (model, age) {
-		var ageInt = A2(
-			_elm_lang$core$Result$withDefault,
-			0,
-			_elm_lang$core$String$toInt(age));
-		var ageError = (_elm_lang$core$Native_Utils.cmp(ageInt, 0) < 1) ? _elm_lang$core$Maybe$Just('Must Enter a Positive Number') : _elm_lang$core$Maybe$Nothing;
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{age: age, ageError: ageError}),
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
-	});
-var _user$project$HackProject$isValid = function (model) {
-	return _elm_lang$core$Native_Utils.eq(model.nameError, _elm_lang$core$Maybe$Nothing) && (_elm_lang$core$Native_Utils.eq(model.locationError, _elm_lang$core$Maybe$Nothing) && (_elm_lang$core$Native_Utils.eq(model.ageError, _elm_lang$core$Maybe$Nothing) && _elm_lang$core$Native_Utils.eq(model.bibError, _elm_lang$core$Maybe$Nothing)));
+var _user$project$HackProject$initModel = {
+	error: _elm_lang$core$Maybe$Nothing,
+	projects: {ctor: '[]'}
 };
-var _user$project$HackProject$validateBib = function (model) {
-	var bibAsInt = A2(
-		_elm_lang$core$Result$withDefault,
-		0,
-		_elm_lang$core$String$toInt(model.bib));
-	return (_elm_lang$core$Native_Utils.cmp(bibAsInt, 0) < 1) ? _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			bibError: _elm_lang$core$Maybe$Just('Bib must be a positve number')
-		}) : _elm_lang$core$Native_Utils.update(
-		model,
-		{bibError: _elm_lang$core$Maybe$Nothing});
-};
-var _user$project$HackProject$validateAge = function (model) {
-	var ageAsInt = A2(
-		_elm_lang$core$Result$withDefault,
-		0,
-		_elm_lang$core$String$toInt(model.age));
-	return (_elm_lang$core$Native_Utils.cmp(ageAsInt, 0) < 1) ? _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			ageError: _elm_lang$core$Maybe$Just('Age must be a positve number')
-		}) : _elm_lang$core$Native_Utils.update(
-		model,
-		{ageError: _elm_lang$core$Maybe$Nothing});
-};
-var _user$project$HackProject$validateLocation = function (model) {
-	return _elm_lang$core$String$isEmpty(model.location) ? _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			locationError: _elm_lang$core$Maybe$Just('Location is required')
-		}) : _elm_lang$core$Native_Utils.update(
-		model,
-		{locationError: _elm_lang$core$Maybe$Nothing});
-};
-var _user$project$HackProject$validateName = function (model) {
-	return _elm_lang$core$String$isEmpty(model.name) ? _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			nameError: _elm_lang$core$Maybe$Just('Name is required')
-		}) : _elm_lang$core$Native_Utils.update(
-		model,
-		{nameError: _elm_lang$core$Maybe$Nothing});
-};
-var _user$project$HackProject$validate = function (model) {
-	return _user$project$HackProject$validateBib(
-		_user$project$HackProject$validateAge(
-			_user$project$HackProject$validateLocation(
-				_user$project$HackProject$validateName(model))));
-};
+var _user$project$HackProject$init = {ctor: '_Tuple2', _0: _user$project$HackProject$initModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$HackProject$Project = F3(
 	function (a, b, c) {
 		return {id: a, name: b, description: c};
@@ -15800,486 +15732,26 @@ var _user$project$HackProject$projectsDecoder = A3(
 	'projects',
 	_elm_lang$core$Json_Decode$list(_user$project$HackProject$projectDecoder),
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$HackProject$Projects));
-var _user$project$HackProject$Model = function (a) {
-	return function (b) {
-		return function (c) {
-			return function (d) {
-				return function (e) {
-					return function (f) {
-						return function (g) {
-							return function (h) {
-								return function (i) {
-									return function (j) {
-										return function (k) {
-											return function (l) {
-												return {id: a, name: b, nameError: c, location: d, locationError: e, age: f, ageError: g, bib: h, bibError: i, error: j, status: k, projects: l};
-											};
-										};
-									};
-								};
-							};
-						};
-					};
-				};
-			};
-		};
-	};
-};
+var _user$project$HackProject$Model = F2(
+	function (a, b) {
+		return {error: a, projects: b};
+	});
 var _user$project$HackProject$NotSaved = {ctor: 'NotSaved'};
-var _user$project$HackProject$initModel = {
-	id: '',
-	name: '',
-	nameError: _elm_lang$core$Maybe$Nothing,
-	location: '',
-	locationError: _elm_lang$core$Maybe$Nothing,
-	age: '',
-	ageError: _elm_lang$core$Maybe$Nothing,
-	bib: '',
-	bibError: _elm_lang$core$Maybe$Nothing,
-	error: _elm_lang$core$Maybe$Nothing,
-	status: _user$project$HackProject$NotSaved,
-	projects: {ctor: '[]'}
-};
-var _user$project$HackProject$init = {ctor: '_Tuple2', _0: _user$project$HackProject$initModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$HackProject$Saved = function (a) {
 	return {ctor: 'Saved', _0: a};
 };
 var _user$project$HackProject$Saving = function (a) {
 	return {ctor: 'Saving', _0: a};
 };
-var _user$project$HackProject$SaveResponse = function (a) {
-	return {ctor: 'SaveResponse', _0: a};
+var _user$project$HackProject$GetProjectsResponse = function (a) {
+	return {ctor: 'GetProjectsResponse', _0: a};
 };
-var _user$project$HackProject$save = F2(
-	function (model, token) {
-		var decoder = A2(_elm_lang$core$Json_Decode$field, '_id', _elm_lang$core$Json_Decode$string);
-		var json = _elm_lang$core$Json_Encode$object(
-			{
-				ctor: '::',
-				_0: {
-					ctor: '_Tuple2',
-					_0: 'name',
-					_1: _elm_lang$core$Json_Encode$string(model.name)
-				},
-				_1: {
-					ctor: '::',
-					_0: {
-						ctor: '_Tuple2',
-						_0: 'location',
-						_1: _elm_lang$core$Json_Encode$string(model.location)
-					},
-					_1: {
-						ctor: '::',
-						_0: {
-							ctor: '_Tuple2',
-							_0: 'age',
-							_1: _elm_lang$core$Json_Encode$int(
-								_user$project$HackProject$asInt(model.age))
-						},
-						_1: {
-							ctor: '::',
-							_0: {
-								ctor: '_Tuple2',
-								_0: 'bib',
-								_1: _elm_lang$core$Json_Encode$int(
-									_user$project$HackProject$asInt(model.bib))
-							},
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			});
-		var body = _elm_lang$http$Http$jsonBody(json);
-		var headers = {
-			ctor: '::',
-			_0: A2(
-				_elm_lang$http$Http$header,
-				'Authorization',
-				A2(_elm_lang$core$Basics_ops['++'], 'Bearer ', token)),
-			_1: {ctor: '[]'}
-		};
-		var url = 'http://localhost:5000/runner';
-		var request = A4(_user$project$HackProject$postWithHeaders, url, headers, body, decoder);
-		var cmd = A2(_elm_lang$http$Http$send, _user$project$HackProject$SaveResponse, request);
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{
-					status: _user$project$HackProject$Saving('Saving runner...')
-				}),
-			_1: cmd
-		};
-	});
-var _user$project$HackProject$update = F3(
-	function (msg, model, token) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
-			case 'NameInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{name: _p1._0, nameError: _elm_lang$core$Maybe$Nothing}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'LocationInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{location: _p1._0, locationError: _elm_lang$core$Maybe$Nothing}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'AgeInput':
-				return A2(_user$project$HackProject$ageInput, model, _p1._0);
-			case 'BibInput':
-				return A2(_user$project$HackProject$bibInput, model, _p1._0);
-			case 'Save':
-				var updatedModel = _user$project$HackProject$validate(model);
-				return _user$project$HackProject$isValid(updatedModel) ? A2(_user$project$HackProject$save, model, token) : {ctor: '_Tuple2', _0: updatedModel, _1: _elm_lang$core$Platform_Cmd$none};
-			default:
-				if (_p1._0.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							_user$project$HackProject$initModel,
-							{
-								status: _user$project$HackProject$Saved('saved.')
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					var errorMessage = function () {
-						var _p2 = _p1._0._0;
-						if (_p2.ctor === 'BadStatus') {
-							return _p2._0.body;
-						} else {
-							return 'Error saving runner!';
-						}
-					}();
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								status: _user$project$HackProject$NotSaved,
-								error: _elm_lang$core$Maybe$Just(errorMessage)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-		}
-	});
-var _user$project$HackProject$Save = {ctor: 'Save'};
-var _user$project$HackProject$BibInput = function (a) {
-	return {ctor: 'BibInput', _0: a};
-};
-var _user$project$HackProject$AgeInput = function (a) {
-	return {ctor: 'AgeInput', _0: a};
-};
-var _user$project$HackProject$LocationInput = function (a) {
-	return {ctor: 'LocationInput', _0: a};
-};
-var _user$project$HackProject$NameInput = function (a) {
-	return {ctor: 'NameInput', _0: a};
-};
-var _user$project$HackProject$viewForm = function (model) {
+var _user$project$HackProject$getProjects = function (model) {
+	var url = '/api/hackathon';
 	return A2(
-		_elm_lang$html$Html$form,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('add-runner'),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onSubmit(_user$project$HackProject$Save),
-				_1: {ctor: '[]'}
-			}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$fieldset,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$legend,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('Add / Edit Runner'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$label,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text('Name'),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$input,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$type_('text'),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$value(model.name),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html_Events$onInput(_user$project$HackProject$NameInput),
-													_1: {ctor: '[]'}
-												}
-											}
-										},
-										{ctor: '[]'}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$span,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text(
-													A2(_elm_lang$core$Maybe$withDefault, '', model.nameError)),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									}
-								}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$div,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$label,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('Location'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$input,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$type_('text'),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$value(model.location),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Events$onInput(_user$project$HackProject$LocationInput),
-														_1: {ctor: '[]'}
-													}
-												}
-											},
-											{ctor: '[]'}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$span,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html$text(
-														A2(_elm_lang$core$Maybe$withDefault, '', model.locationError)),
-													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
-									}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$div,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$label,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Age'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$input,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$type_('text'),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$value(model.age),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Events$onInput(_user$project$HackProject$AgeInput),
-															_1: {ctor: '[]'}
-														}
-													}
-												},
-												{ctor: '[]'}),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$span,
-													{ctor: '[]'},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text(
-															A2(_elm_lang$core$Maybe$withDefault, '', model.ageError)),
-														_1: {ctor: '[]'}
-													}),
-												_1: {ctor: '[]'}
-											}
-										}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$div,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$label,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html$text('Bib #'),
-													_1: {ctor: '[]'}
-												}),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$input,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$type_('text'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$value(model.bib),
-															_1: {
-																ctor: '::',
-																_0: _elm_lang$html$Html_Events$onInput(_user$project$HackProject$BibInput),
-																_1: {ctor: '[]'}
-															}
-														}
-													},
-													{ctor: '[]'}),
-												_1: {
-													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$span,
-														{ctor: '[]'},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text(
-																A2(_elm_lang$core$Maybe$withDefault, '', model.bibError)),
-															_1: {ctor: '[]'}
-														}),
-													_1: {ctor: '[]'}
-												}
-											}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$div,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$label,
-													{ctor: '[]'},
-													{ctor: '[]'}),
-												_1: {
-													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$button,
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$type_('submit'),
-															_1: {ctor: '[]'}
-														},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text('Save'),
-															_1: {ctor: '[]'}
-														}),
-													_1: {
-														ctor: '::',
-														_0: A2(
-															_elm_lang$html$Html$span,
-															{ctor: '[]'},
-															{
-																ctor: '::',
-																_0: _elm_lang$html$Html$text(
-																	function () {
-																		var _p3 = model.status;
-																		switch (_p3.ctor) {
-																			case 'Saving':
-																				return _p3._0;
-																			case 'Saved':
-																				return _p3._0;
-																			default:
-																				return '';
-																		}
-																	}()),
-																_1: {ctor: '[]'}
-															}),
-														_1: {ctor: '[]'}
-													}
-												}
-											}),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					}
-				}),
-			_1: {ctor: '[]'}
-		});
-};
-var _user$project$HackProject$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('main'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _user$project$HackProject$errorPanel(model.error),
-			_1: {
-				ctor: '::',
-				_0: _user$project$HackProject$viewForm(model),
-				_1: {ctor: '[]'}
-			}
-		});
+		_elm_lang$http$Http$send,
+		_user$project$HackProject$GetProjectsResponse,
+		A2(_elm_lang$http$Http$get, url, _user$project$HackProject$projectsDecoder));
 };
 
 var _user$project$Login$subscriptions = function (model) {
@@ -16782,10 +16254,10 @@ var _user$project$Main$update = F2(
 						})
 				};
 			case 'ProjectMsg':
-				var token = A2(_elm_lang$core$Maybe$withDefault, '', model.token);
-				var _p12 = A3(_user$project$HackProject$update, _p7._0, model.runner, token);
+				var _p12 = A2(_user$project$HackProject$update, _p7._0, model.runner);
 				var runnerModel = _p12._0;
 				var runnerCmd = _p12._1;
+				var token = A2(_elm_lang$core$Maybe$withDefault, '', model.token);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16981,7 +16453,7 @@ var _user$project$Main$view = function (model) {
 							{ctor: '[]'},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text('Page Not Found!'),
+								_0: _elm_lang$html$Html$text('Page Not Found'),
 								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
@@ -17028,7 +16500,7 @@ var _user$project$Main$main = A2(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Login.Msg":{"args":[],"tags":{"UsernameInput":["String"],"Error":["String"],"Submit":[],"LoginResponse":["Result.Result Http.Error String"],"PasswordInput":["String"]}},"HackBoard.Msg":{"args":[],"tags":{"GetHackathonResponse":["Result.Result Http.Error HackBoard.Hackathons"],"SearchInput":["String"],"Search":[]}},"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"HackBoardMsg":["HackBoard.Msg"],"Logout":[],"LoginMsg":["Login.Msg"],"ProjectMsg":["HackProject.Msg"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"HackProject.Msg":{"args":[],"tags":{"BibInput":["String"],"AgeInput":["String"],"LocationInput":["String"],"SaveResponse":["Result.Result Http.Error String"],"NameInput":["String"],"Save":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"NotFound":[],"HackBoardPage":[],"LoginPage":[],"ProjectPage":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"HackBoard.Hackathons":{"args":[],"type":"{ hackathons : List HackBoard.Hackathon }"},"HackBoard.Hackathon":{"args":[],"type":"{ id : Int, name : String, organisator : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Login.Msg":{"args":[],"tags":{"UsernameInput":["String"],"Error":["String"],"Submit":[],"LoginResponse":["Result.Result Http.Error String"],"PasswordInput":["String"]}},"HackBoard.Msg":{"args":[],"tags":{"GetHackathonResponse":["Result.Result Http.Error HackBoard.Hackathons"],"SearchInput":["String"],"Search":[]}},"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"HackBoardMsg":["HackBoard.Msg"],"Logout":[],"LoginMsg":["Login.Msg"],"ProjectMsg":["HackProject.Msg"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"HackProject.Msg":{"args":[],"tags":{"GetProjectsResponse":["Result.Result Http.Error HackProject.Projects"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"NotFound":[],"HackBoardPage":[],"LoginPage":[],"ProjectPage":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"HackBoard.Hackathons":{"args":[],"type":"{ hackathons : List HackBoard.Hackathon }"},"HackProject.Projects":{"args":[],"type":"{ projects : List HackProject.Project }"},"HackProject.Project":{"args":[],"type":"{ id : Int, name : String, description : String }"},"HackBoard.Hackathon":{"args":[],"type":"{ id : Int, name : String, organisator : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

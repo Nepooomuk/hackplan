@@ -15958,11 +15958,38 @@ var _user$project$HackProject$view = function (model) {
 			_0: _user$project$HackProject$errorPanel(model.error),
 			_1: {
 				ctor: '::',
-				_0: _user$project$HackProject$searchForm(model.query),
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$img,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$src('assets/hackathon-graphic.png'),
+								_1: {ctor: '[]'}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
 				_1: {
 					ctor: '::',
-					_0: _user$project$HackProject$projects(model),
-					_1: {ctor: '[]'}
+					_0: _user$project$HackProject$searchForm(model.query),
+					_1: {
+						ctor: '::',
+						_0: _user$project$HackProject$projects(model),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
@@ -16038,7 +16065,7 @@ var _user$project$Login$update = F3(
 								ctor: '::',
 								_0: {
 									ctor: '_Tuple2',
-									_0: 'username',
+									_0: 'email',
 									_1: _elm_lang$core$Json_Encode$string(model.username)
 								},
 								_1: {

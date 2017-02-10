@@ -63,7 +63,7 @@ update msg model target =
         Submit ->
             let
                 body =
-                    [ ( "username", JE.string model.username )
+                    [ ( "email", JE.string model.username )
                     , ( "password", JE.string model.password )
                     ]
                         |> JE.object

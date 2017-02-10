@@ -1,16 +1,16 @@
 package handler
 
 import (
-	"github.com/kataras/iris"
-	"github.com/hackdaysspring2017/hackplan/model"
 	"fmt"
+	"github.com/hackdaysspring2017/hackplan/model"
+	"github.com/kataras/iris"
 )
 
 var userrepo map[int]model.User
 
 func init() {
 	userrepo = map[int]model.User{}
-	userrepo[1] = model.User{Id:1, SureName: "Power", FirstName: "Max", IsAdmin: true, Email: "Max.Power@rewe-oer-erkenschwick.de", Password: "cuteboyz1992"}
+	userrepo[1] = model.User{Id: 1, SureName: "Power", FirstName: "Max", IsAdmin: true, Email: "admin@hackplan.de", Password: "hackplan"}
 }
 
 func LoginHandler(ctx *iris.Context) {
@@ -22,10 +22,12 @@ func LoginHandler(ctx *iris.Context) {
 	} else {
 		for _, value := range userrepo {
 			if value.Email == auth.Email && value.Password == auth.Password {
-				token := &model.Token{Token:"2138123ASDYXCASD"}
+				token := &model.Token{Token: "2138123ASDYXCASD"}
 				ctx.JSON(200, token)
+				return
 			} else {
 				ctx.JSON(403, "no found")
+				return
 			}
 		}
 	}

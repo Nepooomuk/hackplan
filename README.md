@@ -1,4 +1,4 @@
-# hackplan
+# H@ck-Plan
 
 wir Hacken einen Plan...
 

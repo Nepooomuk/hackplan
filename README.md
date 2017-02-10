@@ -4,6 +4,7 @@ wir Hacken einen Plan...
 
 ![H@ckplan](https://github.com/hackdaysspring2017/hackplan/raw/master/views/assets/hackathon-graphic.png)
 
+Funktionen:
 
 Gruppen
 
@@ -23,4 +24,3 @@ Gruppen
 - Projekt einreichen
 - Projekt beitretten
 
-Startseite -> Login, Übersicht der Hackathons,

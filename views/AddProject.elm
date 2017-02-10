@@ -291,7 +291,7 @@ viewForm : Model -> Html Msg
 viewForm model =
     Html.form [ class "add-runner", onSubmit Save ]
         [ fieldset []
-            [ legend [] [ text "Add / Edit Runner" ]
+            [ legend [] [ text "Add Project" ]
             , div []
                 [ label [] [ text "Name" ]
                 , input
@@ -303,7 +303,7 @@ viewForm model =
                 , span [] [ text <| Maybe.withDefault "" model.nameError ]
                 ]
             , div []
-                [ label [] [ text "Location" ]
+                [ label [] [ text "Description" ]
                 , input
                     [ type_ "text"
                     , value model.location
@@ -311,26 +311,6 @@ viewForm model =
                     ]
                     []
                 , span [] [ text <| Maybe.withDefault "" model.locationError ]
-                ]
-            , div []
-                [ label [] [ text "Age" ]
-                , input
-                    [ type_ "text"
-                    , value model.age
-                    , onInput AgeInput
-                    ]
-                    []
-                , span [] [ text <| Maybe.withDefault "" model.ageError ]
-                ]
-            , div []
-                [ label [] [ text "Bib #" ]
-                , input
-                    [ type_ "text"
-                    , value model.bib
-                    , onInput BibInput
-                    ]
-                    []
-                , span [] [ text <| Maybe.withDefault "" model.bibError ]
                 ]
             , div []
                 [ label [] []

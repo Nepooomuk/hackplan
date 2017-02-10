@@ -7,13 +7,15 @@ import Navigation
 import HackBoard
 import Login
 import HackProject
-
+import AddProject
+import HackUsers
 
 -- model
 
 
 type Page
     = NotFound
+    | AddProjectPage
     | HackBoardPage
     | LoginPage
     | ProjectPage
@@ -58,6 +60,7 @@ type alias Model =
     , leaderBoard : HackBoard.Model
     , login : Login.Model
     , runner : HackProject.Model
+    , addproject : AddProject.Model
     , token : Maybe String
     }
 
@@ -83,12 +86,16 @@ init flags location =
         ( runnerInitModel, runnerInitCmd ) =
             HackProject.init
 
+        ( addprojectInitModel, addprojectInitCmd ) =
+            AddProject.init
+
         initModel =
             { page = securePage
             , target = secureTarget
             , leaderBoard = lbInitModel
             , login = loginInitModel
             , runner = runnerInitModel
+            , addproject = addprojectInitModel
             , token = flags.token
             }
 
@@ -116,6 +123,7 @@ type Msg
     = Navigate Page
     | ChangePage Page
     | HackBoardMsg HackBoard.Msg
+    | AddProjectMsg AddProject.Msg
     | LoginMsg Login.Msg
     | ProjectMsg HackProject.Msg
     | Logout
@@ -141,6 +149,15 @@ update msg model =
             in
                 ( { model | leaderBoard = lbModel }
                 , Cmd.map HackBoardMsg lbCmd
+                )
+
+        AddProjectMsg msg ->
+            let
+                ( lbModel, lbCmd ) =
+                    AddProject.update msg model.addproject ""
+            in
+                ( { model | addproject = lbModel }
+                , Cmd.map AddProjectMsg lbCmd
                 )
 
         LoginMsg msg ->
@@ -199,6 +216,9 @@ view model =
                 HackBoardPage ->
                     model.leaderBoard |> HackBoard.view |> Html.map HackBoardMsg
 
+                AddProjectPage ->
+                    model.addproject |> AddProject.view |> Html.map AddProjectMsg
+
                 LoginPage ->
                     model.login |> Login.view |> Html.map LoginMsg
 
@@ -235,7 +255,7 @@ pageHeader model =
 addRunnerLinkView : Model -> Html Msg
 addRunnerLinkView model =
     if loggedIn model then
-        a [ onClick (Navigate ProjectPage) ] [ text "Add Project" ]
+        a [ onClick (Navigate AddProjectPage) ] [ text "Add Project" ]
     else
         text ""
 
@@ -267,6 +287,9 @@ hashToPage hash =
         "#/projects" ->
             ProjectPage
 
+        "#/add" ->
+            AddProjectPage
+
         _ ->
             NotFound
 
@@ -282,6 +305,9 @@ pageToHash page =
 
         ProjectPage ->
             "#/projects"
+
+        AddProjectPage ->
+            "#/add"
 
         NotFound ->
             "#notfound"

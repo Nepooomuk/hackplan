@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/kataras/iris"
 	"github.com/hackdaysspring2017/hackplan/handler"
+	"github.com/kataras/iris"
 )
 
 func main() {
@@ -41,11 +41,13 @@ func main() {
 
 	app.StaticServe("./views", "/ui")
 
-	/*app.UseTemplate(html.New()).Directory("./views", ".html")
-
-	app.Get("/", func(ctx *iris.Context) {
-		ctx.Render("index.html", nil)
-	})*/
+	app.Get("/", redirect("/ui"))
 
 	app.Listen(":8080")
+}
+
+func redirect(location string) func(*iris.Context) {
+	return func(ctx *iris.Context) {
+		ctx.Redirect(location)
+	}
 }

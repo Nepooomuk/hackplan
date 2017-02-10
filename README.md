@@ -4,6 +4,11 @@ wir Hacken einen Plan...
 
 ![H@ckplan](https://github.com/hackdaysspring2017/hackplan/raw/master/views/assets/hackathon-graphic.png)
 
+nach
+
+![H@ckplan](https://github.com/hackdaysspring2017/hackplan/raw/master/views/assets/rewe.png)
+
+
 Funktionen:
 
 Gruppen

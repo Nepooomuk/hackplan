@@ -16583,7 +16583,7 @@ var _user$project$Main$pageHeader = function (model) {
 			_0: _elm_lang$html$Html_Attributes$style(
 				{
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'background-image', _1: 'url(assets/hackathon-graphic.png)'},
+					_0: {ctor: '_Tuple2', _0: 'background-image', _1: 'url(assets/header-background_img.jpg)'},
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}

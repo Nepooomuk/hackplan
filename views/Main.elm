@@ -8,7 +8,9 @@ import HackBoard
 import Login
 import HackProject
 
+
 -- model
+
 
 type Page
     = NotFound
@@ -19,8 +21,12 @@ type Page
 
 securePages : List Page
 securePages =
-    [  ]
+    []
+
+
+
 --- [ ProjectPage ]
+
 
 loginTarget : Page -> String -> String
 loginTarget page target =

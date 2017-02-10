@@ -117,24 +117,6 @@ update msg model =
 -- view
 
 
-formatDistance : Float -> String
-formatDistance distance =
-    if distance <= 0 then
-        ""
-    else
-        toString ((toFloat (round (distance * 100))) / 100)
-
-
-formatTime : Time.Time -> String
-formatTime time =
-    if time > 0 then
-        time
-            |> Date.fromTime
-            |> DateFormat.format DateConfig.config "%H:%M:%S %P"
-    else
-        ""
-
-
 view : Model -> Html Msg
 view model =
     div [ class "main" ]

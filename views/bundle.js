@@ -15489,18 +15489,6 @@ var _user$project$HackBoard$errorPanel = function (error) {
 			});
 	}
 };
-var _user$project$HackBoard$formatTime = function (time) {
-	return (_elm_lang$core$Native_Utils.cmp(time, 0) > 0) ? A3(
-		_rluiten$elm_date_extra$Date_Extra_Format$format,
-		_rluiten$elm_date_extra$Date_Extra_Config_Config_en_us$config,
-		'%H:%M:%S %P',
-		_elm_lang$core$Date$fromTime(time)) : '';
-};
-var _user$project$HackBoard$formatDistance = function (distance) {
-	return (_elm_lang$core$Native_Utils.cmp(distance, 0) < 1) ? '' : _elm_lang$core$Basics$toString(
-		_elm_lang$core$Basics$toFloat(
-			_elm_lang$core$Basics$round(distance * 100)) / 100);
-};
 var _user$project$HackBoard$initModel = {
 	error: _elm_lang$core$Maybe$Nothing,
 	query: '',
@@ -15690,34 +15678,143 @@ var _user$project$HackProject$errorPanel = function (error) {
 			});
 	}
 };
-var _user$project$HackProject$view = function (model) {
+var _user$project$HackProject$projectsHeader = A2(
+	_elm_lang$html$Html$thead,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$tr,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$th,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('id'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$th,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('name'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$th,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('description'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _user$project$HackProject$project = function (project) {
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$html$Html$tr,
+		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('main'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _user$project$HackProject$errorPanel(model.error),
+			_0: A2(
+				_elm_lang$html$Html$td,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(project.id)),
+					_1: {ctor: '[]'}
+				}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$HackProject$viewForm(model),
-				_1: {ctor: '[]'}
+				_0: A2(
+					_elm_lang$html$Html$td,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$a,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$href('/ui/#/projects'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(project.name),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$td,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(project.description),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
+var _user$project$HackProject$projects = function (_p1) {
+	var _p2 = _p1;
+	return A2(
+		_elm_lang$html$Html$table,
+		{ctor: '[]'},
+		function (r) {
+			return {
+				ctor: '::',
+				_0: _user$project$HackProject$projectsHeader,
+				_1: {
+					ctor: '::',
+					_0: r,
+					_1: {ctor: '[]'}
+				}
+			};
+		}(
+			A2(
+				_elm_lang$html$Html$tbody,
+				{ctor: '[]'},
+				A2(_elm_lang$core$List$map, _user$project$HackProject$project, _p2.projects))));
+};
 var _user$project$HackProject$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		var _p3 = msg;
+		if ((_p3.ctor === 'GetProjectsResponse') && (_p3._0.ctor === 'Ok')) {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{projects: _p3._0._0.projects}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
 	});
 var _user$project$HackProject$initModel = {
 	error: _elm_lang$core$Maybe$Nothing,
+	query: '',
+	searchTerm: _elm_lang$core$Maybe$Nothing,
 	projects: {ctor: '[]'}
 };
-var _user$project$HackProject$init = {ctor: '_Tuple2', _0: _user$project$HackProject$initModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$HackProject$Project = F3(
 	function (a, b, c) {
 		return {id: a, name: b, description: c};
@@ -15743,9 +15840,9 @@ var _user$project$HackProject$projectsDecoder = A3(
 	'projects',
 	_elm_lang$core$Json_Decode$list(_user$project$HackProject$projectDecoder),
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$HackProject$Projects));
-var _user$project$HackProject$Model = F2(
-	function (a, b) {
-		return {error: a, projects: b};
+var _user$project$HackProject$Model = F4(
+	function (a, b, c, d) {
+		return {error: a, query: b, searchTerm: c, projects: d};
 	});
 var _user$project$HackProject$NotSaved = {ctor: 'NotSaved'};
 var _user$project$HackProject$Saved = function (a) {
@@ -15758,11 +15855,90 @@ var _user$project$HackProject$GetProjectsResponse = function (a) {
 	return {ctor: 'GetProjectsResponse', _0: a};
 };
 var _user$project$HackProject$getProjects = function (model) {
-	var url = '/api/hackathon';
+	var url = '/api/project';
 	return A2(
 		_elm_lang$http$Http$send,
 		_user$project$HackProject$GetProjectsResponse,
 		A2(_elm_lang$http$Http$get, url, _user$project$HackProject$projectsDecoder));
+};
+var _user$project$HackProject$init = {
+	ctor: '_Tuple2',
+	_0: _user$project$HackProject$initModel,
+	_1: _user$project$HackProject$getProjects(_user$project$HackProject$initModel)
+};
+var _user$project$HackProject$Search = {ctor: 'Search'};
+var _user$project$HackProject$SearchInput = function (a) {
+	return {ctor: 'SearchInput', _0: a};
+};
+var _user$project$HackProject$searchForm = function (query) {
+	return A2(
+		_elm_lang$html$Html$form,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Events$onSubmit(_user$project$HackProject$Search),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('text'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$placeholder('Search for ...'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$value(query),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$HackProject$SearchInput),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$type_('submit'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Search'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$HackProject$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('main'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _user$project$HackProject$errorPanel(model.error),
+			_1: {
+				ctor: '::',
+				_0: _user$project$HackProject$searchForm(model.query),
+				_1: {
+					ctor: '::',
+					_0: _user$project$HackProject$projects(model),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
 };
 
 var _user$project$Login$subscriptions = function (model) {
@@ -16511,7 +16687,7 @@ var _user$project$Main$main = A2(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Login.Msg":{"args":[],"tags":{"UsernameInput":["String"],"Error":["String"],"Submit":[],"LoginResponse":["Result.Result Http.Error String"],"PasswordInput":["String"]}},"HackBoard.Msg":{"args":[],"tags":{"GetHackathonResponse":["Result.Result Http.Error HackBoard.Hackathons"],"SearchInput":["String"],"Search":[]}},"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"HackBoardMsg":["HackBoard.Msg"],"Logout":[],"LoginMsg":["Login.Msg"],"ProjectMsg":["HackProject.Msg"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"HackProject.Msg":{"args":[],"tags":{"GetProjectsResponse":["Result.Result Http.Error HackProject.Projects"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"NotFound":[],"HackBoardPage":[],"LoginPage":[],"ProjectPage":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"HackBoard.Hackathons":{"args":[],"type":"{ hackathons : List HackBoard.Hackathon }"},"HackProject.Projects":{"args":[],"type":"{ projects : List HackProject.Project }"},"HackProject.Project":{"args":[],"type":"{ id : Int, name : String, description : String }"},"HackBoard.Hackathon":{"args":[],"type":"{ id : Int, name : String, organisator : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Login.Msg":{"args":[],"tags":{"UsernameInput":["String"],"Error":["String"],"Submit":[],"LoginResponse":["Result.Result Http.Error String"],"PasswordInput":["String"]}},"HackBoard.Msg":{"args":[],"tags":{"GetHackathonResponse":["Result.Result Http.Error HackBoard.Hackathons"],"SearchInput":["String"],"Search":[]}},"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"HackBoardMsg":["HackBoard.Msg"],"Logout":[],"LoginMsg":["Login.Msg"],"ProjectMsg":["HackProject.Msg"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"HackProject.Msg":{"args":[],"tags":{"SearchInput":["String"],"GetProjectsResponse":["Result.Result Http.Error HackProject.Projects"],"Search":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"NotFound":[],"HackBoardPage":[],"LoginPage":[],"ProjectPage":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"HackBoard.Hackathons":{"args":[],"type":"{ hackathons : List HackBoard.Hackathon }"},"HackProject.Projects":{"args":[],"type":"{ projects : List HackProject.Project }"},"HackProject.Project":{"args":[],"type":"{ id : Int, name : String, description : String }"},"HackBoard.Hackathon":{"args":[],"type":"{ id : Int, name : String, organisator : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

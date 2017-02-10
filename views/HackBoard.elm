@@ -184,7 +184,7 @@ hackathon : Hackathon -> Html Msg
 hackathon hackathon =
     tr []
         [ td [] [ text (toString hackathon.id) ]
-        , td [] [ text hackathon.name ]
+        , td [] [ a [href "/ui/#/projects"] [ text hackathon.name] ]
         , td [] [ text hackathon.organisator ]
         ]
 

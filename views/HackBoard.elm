@@ -121,6 +121,7 @@ view : Model -> Html Msg
 view model =
     div [ class "main" ]
         [ errorPanel model.error
+        , div [style [("text-align","center")]] [img [ src "assets/hackathon-graphic.png"] []]
         , searchForm model.query
         , hackathons model
         ]

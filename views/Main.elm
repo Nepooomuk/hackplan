@@ -219,8 +219,8 @@ view model =
 
 pageHeader : Model -> Html Msg
 pageHeader model =
-    header []
-        [ a [ onClick (Navigate HackBoardPage) ] [ text "Hackplan 2017" ]
+    header [ style [("background-image","url(assets/hackathon-graphic.png)")] ]
+        [ a [  onClick (Navigate HackBoardPage) ] [ text "Hackplan 2017" ]
         , ul []
             [ li []
                 [ addRunnerLinkView model ]

@@ -1,17 +1,20 @@
 package handler
 
 import (
-	"github.com/kataras/iris"
-	"github.com/hackdaysspring2017/hackplan/model"
 	"fmt"
+	"github.com/hackdaysspring2017/hackplan/model"
+	"github.com/kataras/iris"
 )
 
 var hackathonrepo map[int]model.Hackathons
 
-func init()  {
-	 hackathonrepo = map[int]model.Hackathons{}
-	 projects := make([]model.Project, 0)
-	 hackathonrepo[1] = model.Hackathons{Id:1,Name:"Rewe Systems Hackathon 2017",Organisator:"Rewe",Projects:projects}
+func init() {
+	hackathonrepo = map[int]model.Hackathons{}
+	projects := make([]model.Project, 0)
+	hackathonrepo[1] = model.Hackathons{Id: 1, Name: "Rewe Systems Hackathon 2017", Organisator: "Rewe", Projects: projects}
+	hackathonrepo[2] = model.Hackathons{Id: 2, Name: "Frankfurt DeutscheBank Hack 2017", Organisator: "DeutscheBank", Projects: projects}
+	hackathonrepo[3] = model.Hackathons{Id: 3, Name: "Rewe Digital Hackabend", Organisator: "Rewe", Projects: projects}
+	hackathonrepo[4] = model.Hackathons{Id: 4, Name: "Global Around-The-World", Organisator: "IBM", Projects: projects}
 }
 
 func HackathonGetHandler(ctx *iris.Context) {

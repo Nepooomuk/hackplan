@@ -15640,11 +15640,38 @@ var _user$project$HackBoard$view = function (model) {
 			_0: _user$project$HackBoard$errorPanel(model.error),
 			_1: {
 				ctor: '::',
-				_0: _user$project$HackBoard$searchForm(model.query),
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$img,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$src('assets/hackathon-graphic.png'),
+								_1: {ctor: '[]'}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
 				_1: {
 					ctor: '::',
-					_0: _user$project$HackBoard$hackathons(model),
-					_1: {ctor: '[]'}
+					_0: _user$project$HackBoard$searchForm(model.query),
+					_1: {
+						ctor: '::',
+						_0: _user$project$HackBoard$hackathons(model),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
@@ -16551,7 +16578,16 @@ var _user$project$Main$loginLinkView = function (model) {
 var _user$project$Main$pageHeader = function (model) {
 	return A2(
 		_elm_lang$html$Html$header,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'background-image', _1: 'url(assets/hackathon-graphic.png)'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: A2(
